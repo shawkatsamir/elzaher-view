@@ -3,7 +3,6 @@ import {
   Award,
   CheckCircle,
   Clock,
-  Home,
   MapPin,
   Shield,
   Sparkles,
@@ -260,10 +259,10 @@ export default function CleaningPage() {
     <div className="min-h-screen">
       <section className="relative bg-gradient-to-br from-blue-50 to-blue-100 py-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
             <div>
-              <div className="flex items-center mb-4">
-                <Sparkles className="h-8 w-8 text-blue-600 ml-3" />
+              <div className="mb-4 flex items-center">
+                <Sparkles className="ml-3 h-8 w-8 text-blue-600" />
                 <Badge
                   variant="secondary"
                   className="bg-blue-100 text-blue-700"
@@ -272,17 +271,17 @@ export default function CleaningPage() {
                 </Badge>
               </div>
 
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="mb-6 text-4xl font-bold text-gray-900 lg:text-5xl">
                 خدمات التنظيف الاحترافية
               </h1>
 
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+              <p className="mb-8 text-lg leading-relaxed text-gray-600">
                 نقدم خدمات تنظيف شاملة للمنازل والمكاتب والفلل بأعلى معايير
                 الجودة والنظافة. فريق محترف ومدرب لضمان حصولكم على بيئة نظيفة
                 وصحية.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col gap-4 sm:flex-row">
                 <Button
                   size="lg"
                   className="flex items-center bg-blue-600 hover:bg-blue-700"
@@ -297,11 +296,11 @@ export default function CleaningPage() {
             </div>
 
             <div className="relative">
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
+              <div className="overflow-hidden rounded-2xl shadow-2xl">
                 <Img
                   src="/images/services/cleaning.jpeg"
                   alt="خدمات التنظيف"
-                  className="w-full h-[400px] object-cover"
+                  className="h-[400px] w-full object-cover"
                 />
               </div>
             </div>
@@ -309,54 +308,54 @@ export default function CleaningPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-white">
+      <section className="bg-white py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="mb-6 text-3xl font-bold text-gray-900">
               لماذا تحتاج خدمات التنظيف المهنية؟
             </h2>
-            <p className="text-lg text-gray-600 leading-relaxed mb-8">
+            <p className="mb-8 text-lg leading-relaxed text-gray-600">
               التنظيف المنتظم والمهني ضروري للحفاظ على بيئة صحية ونظيفة. خدماتنا
               المتخصصة تضمن إزالة الجراثيم والبكتيريا، وتحسين جودة ا��هواء، وخلق
               مساحة مريحة ومنعشة لكم ولعائلتكم. نستخدم أحدث التقنيات والمواد
               الآمنة لضمان نتائج مثالية.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">
               <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
                   <Shield className="h-8 w-8 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">بيئة صحية</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="mb-2 font-semibold text-gray-900">بيئة صحية</h3>
+                <p className="text-sm text-gray-600">
                   إزالة الجراثيم والبكتيريا لبيئة آمنة
                 </p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
                   <Sparkles className="h-8 w-8 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="mb-2 font-semibold text-gray-900">
                   نظافة مثالية
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-sm text-gray-600">
                   تنظيف عميق وشامل لجميع المساحات
                 </p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
                   <Clock className="h-8 w-8 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="mb-2 font-semibold text-gray-900">
                   توفير الوقت
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-sm text-gray-600">
                   اتركوا التنظيف لنا واستمتعوا بوقتكم
                 </p>
               </div>
             </div>
 
-            <div className="bg-primary/5 p-6 rounded-lg">
-              <h3 className="font-semibold text-lg mb-3 flex items-center space-x-2 space-x-reverse">
+            <div className="rounded-lg bg-primary/5 p-6">
+              <h3 className="mb-3 flex items-center space-x-2 space-x-reverse text-lg font-semibold">
                 <MapPin className="h-5 w-5 text-primary" />
                 <span>المناطق التي نخدمها</span>
               </h3>
@@ -372,19 +371,19 @@ export default function CleaningPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-secondary/30">
+      <section className="bg-secondary/30 py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold">
               خدماتنا المتخصصة في التنظيف
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               نقدم مجموعة شاملة من خدمات التنظيف المتخصصة لتلبية جميع احتياجاتكم
               بأعلى معايير الجودة والاحترافية
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {subServices.map((service, index) => (
               <SubServiceCard
                 key={index}
@@ -399,9 +398,9 @@ export default function CleaningPage() {
       </section>
 
       <section className="py-16">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">معرض صور أعمالنا</h2>
+        <div className="container mx-auto max-w-2xl px-4">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold">معرض صور أعمالنا</h2>
             <p className="text-lg text-muted-foreground">
               شاهدوا نماذج من أعمالنا المتميزة في مجال التنظيف
             </p>
@@ -416,29 +415,29 @@ export default function CleaningPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-blue-50">
+      <section className="bg-blue-50 py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-gray-900">
               لماذا تختار خدماتنا؟
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-lg text-gray-600">
               نتميز بالخبرة والمهنية في تقديم أفضل خدمات التنظيف
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {whyChooseUs.map((feature, index) => (
               <Card
                 key={index}
-                className="text-center p-6 hover:shadow-lg transition-shadow duration-300"
+                className="p-6 text-center transition-shadow duration-300 hover:shadow-lg"
               >
                 <CardContent className="p-0">
                   <div className="mb-4 flex justify-center">{feature.icon}</div>
-                  <h3 className="font-semibold text-lg mb-3">
+                  <h3 className="mb-3 text-lg font-semibold">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="leading-relaxed text-gray-600">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -450,20 +449,20 @@ export default function CleaningPage() {
 
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">كيف نعمل؟</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-gray-900">كيف نعمل؟</h2>
+            <p className="mx-auto max-w-2xl text-lg text-gray-600">
               عملية بسيطة ومنظمة للحصول على خدمة تنظيف مثالية
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {workSteps.map((step, index) => (
               <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-xl font-bold text-white">
                   {step.step}
                 </div>
-                <h3 className="font-semibold text-lg mb-3">{step.title}</h3>
+                <h3 className="mb-3 text-lg font-semibold">{step.title}</h3>
                 <p className="text-gray-600">{step.description}</p>
               </div>
             ))}
@@ -471,37 +470,37 @@ export default function CleaningPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-gray-50">
+      <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-gray-900">
               مشاريع مماثلة
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-lg text-gray-600">
               اطلعوا على بعض من مشاريع التنظيف التي نفذناها بنجاح
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {relatedProjects.map((project, index) => (
               <Card
                 key={index}
-                className="hover:shadow-lg transition-shadow duration-300"
+                className="transition-shadow duration-300 hover:shadow-lg"
               >
                 <CardContent className="p-0">
                   <Img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-48 object-cover rounded-t-lg"
+                    className="h-48 w-full rounded-t-lg object-cover"
                   />
                   <div className="p-6">
                     <Badge variant="secondary" className="mb-2">
                       {project.category}
                     </Badge>
-                    <h3 className="font-semibold text-lg mb-2">
+                    <h3 className="mb-2 text-lg font-semibold">
                       {project.title}
                     </h3>
-                    <p className="text-gray-600 mb-4">{project.description}</p>
+                    <p className="mb-4 text-gray-600">{project.description}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -512,26 +511,26 @@ export default function CleaningPage() {
 
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-gray-900">
               الأسئلة الشائعة
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-lg text-gray-600">
               إجابات على أكثر الأسئلة شيوعاً حول خدمات التنظيف
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto space-y-4">
+          <div className="mx-auto max-w-3xl space-y-4">
             {faqItems.map((item, index) => (
               <Card key={index} className="overflow-hidden">
                 <CardContent className="p-0">
                   <details className="group">
-                    <summary className="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50">
-                      <h3 className="font-semibold text-lg">{item.question}</h3>
-                      <ChevronDown className="h-5 w-5 text-gray-500 group-open:rotate-180 transition-transform" />
+                    <summary className="flex cursor-pointer items-center justify-between p-6 hover:bg-gray-50">
+                      <h3 className="text-lg font-semibold">{item.question}</h3>
+                      <ChevronDown className="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180" />
                     </summary>
                     <div className="px-6 pb-6">
-                      <p className="text-gray-600 leading-relaxed">
+                      <p className="leading-relaxed text-gray-600">
                         {item.answer}
                       </p>
                     </div>
@@ -543,16 +542,16 @@ export default function CleaningPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-blue-600 text-white">
+      <section className="bg-blue-600 py-16 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">
+          <h2 className="mb-4 text-3xl font-bold">
             احصل على تنظيف احترافي اليوم
           </h2>
-          <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
+          <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
             تواصل معنا الآن لحجز موعد التنظيف أو للحصول على عرض أسعار مجاني
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <CallButton />
 
             <WhatsAppButton />
