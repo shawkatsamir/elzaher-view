@@ -1,52 +1,54 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       screens: {
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1536px",
-    },
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1536px",
+      },
       fontFamily: {
-        sans: ['Tajawal', 'Arial', 'sans-serif'],
+        sans: ["Tajawal", "Arial", "sans-serif"],
       },
       colors: {
         // 🌈 From theme.ts (brand colors)
         primary: {
-          DEFAULT: '#2563eb',
-          dark: '#1d4ed8',
+          DEFAULT: "#2563eb",
+          dark: "#1d4ed8",
           foreground: "hsl(var(--primary-foreground))", // keep CSS var support
         },
         secondary: {
-          DEFAULT: '#f1f5f9',
+          DEFAULT: "#f1f5f9",
           foreground: "hsl(var(--secondary-foreground))",
         },
         accent: {
-          DEFAULT: '#f59e0b',
-          dark: '#d97706',
+          DEFAULT: "#f59e0b",
+          dark: "#d97706",
           foreground: "hsl(var(--accent-foreground))",
         },
-        white: '#ffffff',
-        black: '#1a1a1a',
+        white: "#ffffff",
+        black: "#1a1a1a",
         gray: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
+          50: "#f8fafc",
+          100: "#f1f5f9",
+          200: "#e2e8f0",
+          300: "#cbd5e1",
+          400: "#94a3b8",
+          500: "#64748b",
+          600: "#475569",
+          700: "#334155",
+          800: "#1e293b",
+          900: "#0f172a",
         },
 
         // 🌗 From globals.css (CSS variable-based colors)
@@ -75,10 +77,10 @@ module.exports = {
 
       // 🎨 From theme.ts (custom shadows)
       boxShadow: {
-        sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-        md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-        lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-        xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+        sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
       },
 
       borderRadius: {
@@ -101,7 +103,6 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
-
   },
   plugins: [require("@tailwindcss/typography")],
 };

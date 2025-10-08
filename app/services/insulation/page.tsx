@@ -1,8 +1,8 @@
-import { Img } from '@/components/Image';
-import { SubServiceCard } from '@/components/SubServiceCard';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Img } from "@/components/Image";
+import { SubServiceCard } from "@/components/SubServiceCard";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
 import {
   CheckCircle,
   Droplets,
@@ -13,121 +13,121 @@ import {
   Subtitles,
   Sun,
   Thermometer,
-} from 'lucide-react';
+} from "lucide-react";
 
 export default function InsulationPage() {
   const insulationTypes = [
     {
-      name: 'العزل الحراري',
-      description: 'يقلل انتقال الحرارة ويوفر في الطاقة',
+      name: "العزل الحراري",
+      description: "يقلل انتقال الحرارة ويوفر في الطاقة",
       benefits: [
-        'توفير 40% من فاتورة الكهرباء',
-        'راحة حرارية أفضل',
-        'حماية من الحرارة الخارجية',
+        "توفير 40% من فاتورة الكهرباء",
+        "راحة حرارية أفضل",
+        "حماية من الحرارة الخارجية",
       ],
     },
     {
-      name: 'العزل المائي',
-      description: 'يمنع تسريب المياه والرطوبة تماماً',
+      name: "العزل المائي",
+      description: "يمنع تسريب المياه والرطوبة تماماً",
       benefits: [
-        'منع تسريبات المياه',
-        'حماية الهيكل الإنشائي',
-        'منع نمو العفن والفطريات',
+        "منع تسريبات المياه",
+        "حماية الهيكل الإنشائي",
+        "منع نمو العفن والفطريات",
       ],
     },
     {
-      name: 'العزل الصوتي',
-      description: 'يقلل الضوضاء ويوفر بيئة هادئة',
+      name: "العزل الصوتي",
+      description: "يقلل الضوضاء ويوفر بيئة هادئة",
       benefits: [
-        'تقليل الضوضاء الخارجية',
-        'خصوصية صوتية أفضل',
-        'بيئة مريحة للعمل والراحة',
+        "تقليل الضوضاء الخارجية",
+        "خصوصية صوتية أفضل",
+        "بيئة مريحة للعمل والراحة",
       ],
     },
   ];
 
   const insulationServices = [
     {
-      title: 'عزل الأسطح ',
-      subtitle: 'عزل أسطح المباني ضد الحرارة باستخدام أفضل المواد العازلة',
+      title: "عزل الأسطح ",
+      subtitle: "عزل أسطح المباني ضد الحرارة باستخدام أفضل المواد العازلة",
       features: [
-        'عزل حراري فعال',
-        'مقاوم للعوامل الجوية',
-        'توفير في فاتورة الكهرباء',
-        'ضمان 10 سنوات',
+        "عزل حراري فعال",
+        "مقاوم للعوامل الجوية",
+        "توفير في فاتورة الكهرباء",
+        "ضمان 10 سنوات",
       ],
-      image: '/images/insulation/surface-insulation.webp',
+      image: "/images/insulation/surface-insulation.webp",
       icon: <Sun className="h-6 w-6" />,
     },
 
     {
-      title: 'عزل الخزانات',
-      subtitle: 'عزل خزانات المياه من الداخل والخارج للحفاظ على جودة المياه',
+      title: "عزل الخزانات",
+      subtitle: "عزل خزانات المياه من الداخل والخارج للحفاظ على جودة المياه",
       features: [
-        'عزل داخلي وخارجي',
-        'مواد صحية آمنة',
-        'منع التلوث',
-        'حماية من التآكل',
+        "عزل داخلي وخارجي",
+        "مواد صحية آمنة",
+        "منع التلوث",
+        "حماية من التآكل",
       ],
-      image: '/images/services/cleaning.jpeg',
+      image: "/images/services/cleaning.jpeg",
       icon: <Shield className="h-6 w-6" />,
     },
     {
-      title: 'عزل المطابخ و الحمامات',
-      subtitle: 'عزل مائي شامل للحمامات والمطابخ لمنع تسريب المياه',
+      title: "عزل المطابخ و الحمامات",
+      subtitle: "عزل مائي شامل للحمامات والمطابخ لمنع تسريب المياه",
       features: [
-        'عزل جدران وأرضيات',
-        'حماية من الرطوبة',
-        'مقاوم للمياه',
-        'تطبيق احترافي',
+        "عزل جدران وأرضيات",
+        "حماية من الرطوبة",
+        "مقاوم للمياه",
+        "تطبيق احترافي",
       ],
-      image: '/images/services/cleaning.jpeg',
+      image: "/images/services/cleaning.jpeg",
       icon: <Home className="h-6 w-6" />,
     },
     {
-      title: 'عزل حمامات السباحة',
-      subtitle: 'عزل مائي شامل لحمامات السباحة لمنع تسريب المياه',
+      title: "عزل حمامات السباحة",
+      subtitle: "عزل مائي شامل لحمامات السباحة لمنع تسريب المياه",
       features: [
-        'عزل جدران وأرضيات',
-        'حماية من الرطوبة',
-        'مقاوم للمياه',
-        'تطبيق احترافي',
+        "عزل جدران وأرضيات",
+        "حماية من الرطوبة",
+        "مقاوم للمياه",
+        "تطبيق احترافي",
       ],
-      image: '/images/services/cleaning.jpeg',
+      image: "/images/services/cleaning.jpeg",
       icon: <Subtitles className="h-6 w-6" />,
     },
     {
-      title: 'العزل المائي',
-      subtitle: 'حماية المباني من تسريبات المياه والرطوبة بتقنيات متطورة',
+      title: "العزل المائي",
+      subtitle: "حماية المباني من تسريبات المياه والرطوبة بتقنيات متطورة",
       features: [
-        'منع تسريب المياه',
-        'مقاوم للرطوبة',
-        'حماية الهيكل الإنشائي',
-        'مواد عالية الجودة',
+        "منع تسريب المياه",
+        "مقاوم للرطوبة",
+        "حماية الهيكل الإنشائي",
+        "مواد عالية الجودة",
       ],
-      image: '/images/services/cleaning.jpeg',
+      image: "/images/services/cleaning.jpeg",
       icon: <Droplets className="h-6 w-6" />,
     },
     {
-      title: 'العزل الحرارى',
-      Subtitle: 'حماية من تسرب المياه و الحرارة باستخدام مواد معتمدة عالميا',
+      title: "العزل الحرارى",
+      subtitle: "حماية من تسرب المياه و الحرارة باستخدام مواد معتمدة عالميا",
       features: [
-        'ضمان تنفيذى يدوم لسنوات',
-        'معاومة عالية للماء و الحرارة',
-        'فحص دورى مجانى',
+        "ضمان تنفيذى يدوم لسنوات",
+        "معاومة عالية للماء و الحرارة",
+        "فحص دورى مجانى",
       ],
-      image: '/images/services/cleaning.jpeg',
+      image: "/images/services/cleaning.jpeg",
       icon: <Subtitles className="h-6 w-6" />,
     },
     {
-      title: ' الصيانة و اﻻصلاح',
-      subtitle: 'خدمات صيانة دولية و تصليح سريع ﻻي مشاكل بعد العزل',
+      title: " الصيانة و اﻻصلاح",
+      subtitle: "خدمات صيانة دولية و تصليح سريع ﻻي مشاكل بعد العزل",
       features: [
-        'زيارات دورية مجانية',
-        'تصليح فورى عند وجود تسرب',
-        'فريق محترف و معدات حديثةٍ',
+        "زيارات دورية مجانية",
+        "تصليح فورى عند وجود تسرب",
+        "فريق محترف و معدات حديثةٍ",
       ],
-      image: '/images/services/cleaning.jpeg',
+      image: "/images/services/cleaning.jpeg",
       icon: <Layers className="h-6 w-6" />,
     },
   ];

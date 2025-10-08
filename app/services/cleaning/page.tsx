@@ -19,37 +19,6 @@ import { CallButton } from "@/components/ui/CallButton";
 import { WhatsAppButton } from "@/components/ui/WhatsappButton";
 
 export default function CleaningPage() {
-  const keyFeatures = [
-    {
-      title: "تنظيف شامل ومتكامل",
-      description:
-        "نقوم بتنظيف جميع أجزاء المنزل من الأرضيات والجدران حتى الأسقف والنوافذ",
-    },
-    {
-      title: "مواد تنظيف آمنة وصحية",
-      description:
-        "نستخدم أحدث المنظفات الآمنة على الصحة والبيئة والمعتمدة عالمياً",
-    },
-    {
-      title: "فريق عمل محترف ومدرب",
-      description: "فريق من الخبراء المدربين على أحدث تقنيات التنظيف والتعقيم",
-    },
-    {
-      title: "أحدث المعدات والأجهزة",
-      description: "نستخدم أحدث الأجهزة والمعدات المتطورة لضمان أفضل النتائج",
-    },
-    {
-      title: "خدمة سريعة ومرنة",
-      description:
-        "نوفر خدمات التنظيف في أوقات مناسبة لكم مع إمكانية الحجز المسبق",
-    },
-    {
-      title: "أسعار تنافسية وعادلة",
-      description:
-        "أسعار مدروسة ومناسبة لجميع الفئات مع باقات متنوعة تناسب احتياجاتكم",
-    },
-  ];
-
   const galleryImages = [
     { image: "/images/gallery/gallery-1.jpeg" },
     { image: "/images/gallery/gallery-2.jpeg" },
