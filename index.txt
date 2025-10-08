@@ -1,0 +1,102 @@
+* A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+=> ✦ This is a classic "hydration error" in Next.js. Here's what it means and why it's likely happening in your code:
+
+  ### What is Hydration?
+
+
+   1. Server-Side Rendering (SSR): Next.js pre-renders your page into HTML on the server. This is great for      
+      performance and SEO because the user gets a fully formed (but non-interactive) page immediately.
+  The error means that the HTML rendered on the server is different from the HTML that React rendered on the     
+  client during its first pass. React expects them to be identical. When they don't match, React gets confused   
+  and logs this warning.
+
+
+  Why is it Happening in Your Code?
+  Looking at your layout.tsx, the layout itself is static and unlikely to be the problem. The error is almost    
+  certainly coming from one of its children, and the most likely culprit is your <Breadcrumbs /> component.      
+
+
+  Breadcrumb components usually need to know the current URL path to display the navigation trail (e.g., Home >  
+  Services > Insulation). The problem arises from how the component gets the URL:
+
+
+   * Server: When rendering on the server, there is no browser, so there is no window.location object. The       
+     component might render a default or empty state.
+  This creates the mismatch: the server rendered an empty breadcrumb, and the client rendered a full one.
+
+  ### How to Fix It
+
+
+  The standard way to fix this is to ensure that any code relying on client-side information (like the URL) only 
+  runs after the initial render.
+
+
+  The most common fix for a component like Breadcrumbs is to use the usePathname hook from next/navigation. This 
+  hook is specifically designed to work correctly with Server Components and avoid this exact issue.
+
+  You were spot on. The component correctly uses 'use client' at the top, which is good. This means it can use 
+  hooks like useState and usePathname.
+
+
+  However, I see a subtle issue that often causes hydration errors. The problem is this pattern:
+
+
+  `jsx
+  {isMenuOpen && (
+    <div className="md:hidden bg-white border-t border-gray-200">
+      {/* ... mobile menu content ... */}
+    </div>
+  )}
+  `
+
+  And also:
+
+  `jsx
+  {isMenuOpen ? (
+    <X className="h-6 w-6" />
+  ) : (
+    <Menu className="h-6 w-6" />
+  )}
+  `
+
+  Here's the sequence of events that creates the mismatch:
+
+
+   1. On the server: The isMenuOpen state is initialized to false. The server renders the HTML with the <Menu> icon 
+      and no mobile navigation menu in the HTML.
+  So, if the initial state is consistent, what's the problem?
+
+
+  The hydration error isn't happening on the initial page load. It's happening because of how the state is       
+  managed after that. The Header is part of the RootLayout, which means it persists across page navigations.     
+
+
+  Let's say you:
+  1.  Open the mobile menu on the homepage (isMenuOpen is now true).
+  2.  Click a link to navigate to the /works page.
+
+
+  Next.js will render the /works page on the server. On the server, the Header component is re-rendered, and its 
+  isMenuOpen state is initialized back to false. The server sends HTML with a closed menu.
+
+
+  However, on the client, the Header component is not unmounted and re-created. It's a persistent layout         
+  component. Its state from the previous page (isMenuOpen: true) is preserved.
+
+
+  Now the mismatch occurs:
+     Server HTML:* Shows a closed menu (<Menu /> icon).
+     Client-side React:* Expects to see an open menu (<X /> icon).
+
+
+  This is the hydration error.
+
+  ### The Solution
+
+
+  The most robust way to fix this is to ensure the menu state is reset whenever the user navigates to a new page. 
+  We can do this using a useEffect hook that listens for changes in the pathname.
+
+
+  I'll add a useEffect to your Header component that will close the mobile menu every time the pathname changes. 
+  This guarantees that the client-side state always matches the server-rendered state after a navigation.
