@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/Header";
@@ -16,12 +18,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className="min-h-screen flex flex-col rtl">
+      <body className="rtl flex min-h-screen flex-col">
         <Header />
         <div className="pt-16">
           <Breadcrumbs />
         </div>
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          {children}
+          <Analytics />
+          <SpeedInsights />
+        </main>
         <Footer />
       </body>
     </html>
