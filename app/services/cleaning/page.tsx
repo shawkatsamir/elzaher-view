@@ -264,14 +264,18 @@ export default function CleaningPage() {
               </div>
             </div>
 
-            <div className="relative">
-              <div className="overflow-hidden rounded-2xl shadow-2xl">
-                <Img
-                  src="/images/services/cleaning.jpeg"
-                  alt="خدمات التنظيف"
-                  className="h-[400px] w-full object-cover"
-                />
-              </div>
+            <div className="h-[400px] w-full overflow-hidden rounded-2xl shadow-2xl">
+              <Img
+                src="/images/services/cleaning.webp"
+                alt="خدمات التنظيف"
+                width={800}
+                height={400}
+                fill={false}
+                priority={true}
+                loading="eager"
+                fetchPriority="high"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>

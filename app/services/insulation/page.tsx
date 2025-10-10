@@ -166,12 +166,15 @@ export default function InsulationPage() {
               </div>
             </div>
 
-            <div className="relative">
-              <div className="overflow-hidden rounded-2xl shadow-2xl">
+            <div>
+              <div className="h-[400px] w-full overflow-hidden rounded-2xl shadow-2xl">
                 <Img
-                  src="/images/services/cleaning.jpeg"
-                  alt="خدمات العزل"
-                  className="h-[400px] w-full object-cover"
+                  src="/images/services/cleaning.webp"
+                  alt="خدمات التنظيف"
+                  width={800}
+                  height={400}
+                  fill={false}
+                  className="h-full w-full object-cover"
                 />
               </div>
               <div className="absolute -bottom-6 -right-6 rounded-xl bg-white p-4 shadow-lg">
@@ -288,7 +291,7 @@ export default function InsulationPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {insulationServices.map((service, index) => (
               <SubServiceCard
                 key={index}

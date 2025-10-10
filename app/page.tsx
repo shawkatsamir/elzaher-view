@@ -1,10 +1,10 @@
-import React from 'react';
-import Link from 'next/link';
-import { ImageCarousel } from '@/components/ImageCarousel';
-import { ServiceCard } from '@/components/ServiceCard';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { WorkCard } from '@/components/WorkCard';
+import React from "react";
+import Link from "next/link";
+import { ImageCarousel } from "@/components/ImageCarousel";
+import { ServiceCard } from "@/components/ServiceCard";
+import { Card, CardContent } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { WorkCard } from "@/components/WorkCard";
 import {
   Award,
   Clock,
@@ -16,136 +16,136 @@ import {
   Trees,
   Building,
   Truck,
-} from 'lucide-react';
-import { WhatsAppButton } from '@/components/ui/WhatsappButton';
-import { CallButton } from '@/components/ui/CallButton';
+} from "lucide-react";
+import { WhatsAppButton } from "@/components/ui/WhatsappButton";
+import { CallButton } from "@/components/ui/CallButton";
 
 export default function HomePage() {
   const heroSlides = [
     {
-      src: '/images/services/photo-1527515637462-cff94eecc1ac.jpeg',
-      title: 'شركة الزاهر فيو للخدمات المنزلية',
+      src: "/images/services/cleaning.webp",
+      title: "شركة الزاهر فيو للخدمات المنزلية",
       subtitle:
-        'نقدم لكم أفضل خدمات التنظيف والصيانة المنزلية بأعلى جودة وأفضل الأسعار في جميع أنحاء المملكة العربية السعودية',
+        "نقدم لكم أفضل خدمات التنظيف والصيانة المنزلية بأعلى جودة وأفضل الأسعار في جميع أنحاء المملكة العربية السعودية",
     },
     {
-      src: '/images/services/photo-1558618666-fcd25c85cd64.jpeg',
-      title: 'خدمات احترافية متميزة',
+      src: "/images/services/photo-1558618666-fcd25c85cd64.jpeg",
+      title: "خدمات احترافية متميزة",
       subtitle:
-        'فريق من الخبراء المتخصصين في جميع أنواع الخدمات المنزلية مع ضمان الجودة والسرعة في التنفيذ',
+        "فريق من الخبراء المتخصصين في جميع أنواع الخدمات المنزلية مع ضمان الجودة والسرعة في التنفيذ",
     },
     {
-      src: '/images/services/photo-1581578731548-c64695cc6952.jpeg',
-      title: 'خدمة العملاء على مدار الساعة',
+      src: "/images/services/photo-1581578731548-c64695cc6952.jpeg",
+      title: "خدمة العملاء على مدار الساعة",
       subtitle:
-        'نحن متاحون 24/7 لتلبية احتياجاتكم وحل جميع مشاكلكم المنزلية بسرعة وكفاءة عالية',
+        "نحن متاحون 24/7 لتلبية احتياجاتكم وحل جميع مشاكلكم المنزلية بسرعة وكفاءة عالية",
     },
   ];
 
   const services = [
     {
-      title: 'خدمات التنظيف',
+      title: "خدمات التنظيف",
       description:
-        'تنظيف شامل للمنازل والمكاتب والفلل مع استخدام أحدث المعدات والمنظفات الآمنة',
-      image: '/images/services/cleaning.jpeg',
-      link: '/services/cleaning',
+        "تنظيف شامل للمنازل والمكاتب والفلل مع استخدام أحدث المعدات والمنظفات الآمنة",
+      image: "/images/services/cleaning.jpeg",
+      link: "/services/cleaning",
       icon: <Sparkles className="h-6 w-6" />,
       features: [
-        'تنظيف المنازل والفلل',
-        'تنظيف المكاتب والشركات',
-        'تعقيم وتطهير شامل',
-        'تنظيف السجاد والموكيت',
-        'تنظيف الواجهات الزجاجية',
+        "تنظيف المنازل والفلل",
+        "تنظيف المكاتب والشركات",
+        "تعقيم وتطهير شامل",
+        "تنظيف السجاد والموكيت",
+        "تنظيف الواجهات الزجاجية",
       ],
     },
     {
-      title: 'خدمات الصيانة المنزلية',
+      title: "خدمات الصيانة المنزلية",
       description:
-        'صيانة وإصلاح جميع الأجهزة المنزلية والكهربائية والتكييف بأيدي خبراء متخصصين',
-      image: '/images/services/cleaning.jpeg',
-      link: '/services/maintenance',
+        "صيانة وإصلاح جميع الأجهزة المنزلية والكهربائية والتكييف بأيدي خبراء متخصصين",
+      image: "/images/services/cleaning.jpeg",
+      link: "/services/maintenance",
       icon: <Wrench className="h-6 w-6" />,
       features: [
-        'صيانة أجهزة التكييف',
-        'إصلاح الأجهزة الكهربائية',
-        'صيانة شبكات الكهرباء',
-        'إصلاح الأعطال الطارئة',
-        'صيانة دورية شاملة',
+        "صيانة أجهزة التكييف",
+        "إصلاح الأجهزة الكهربائية",
+        "صيانة شبكات الكهرباء",
+        "إصلاح الأعطال الطارئة",
+        "صيانة دورية شاملة",
       ],
     },
     {
-      title: 'خدمات التسليك وكشف التسريبات',
+      title: "خدمات التسليك وكشف التسريبات",
       description:
-        'كشف وإصلاح تسريبات المياه وتسليك البالوعات بأحدث الأجهزة والتقنيات المتطورة',
-      image: '/images/services/plumbing.jpeg',
-      link: '/services/plumbing',
+        "كشف وإصلاح تسريبات المياه وتسليك البالوعات بأحدث الأجهزة والتقنيات المتطورة",
+      image: "/images/services/plumbing.jpeg",
+      link: "/services/plumbing",
       icon: <Droplets className="h-6 w-6" />,
       features: [
-        'كشف التسريبات بدون تكسير',
-        'تسليك المجاري والبالوعات',
-        'إصلاح أنابيب المياه',
-        'تركيب التمديدات الصحية',
-        'صيانة شبكات الصرف',
+        "كشف التسريبات بدون تكسير",
+        "تسليك المجاري والبالوعات",
+        "إصلاح أنابيب المياه",
+        "تركيب التمديدات الصحية",
+        "صيانة شبكات الصرف",
       ],
     },
     {
-      title: 'خدمات تنسيق الحدائق',
+      title: "خدمات تنسيق الحدائق",
       description:
-        'تصميم وتنسيق الحدائق وصيانة المساحات الخضراء بلمسة احترافية جميلة',
-      image: '/images/services/gardening.jpeg',
-      link: '/services/landscaping',
+        "تصميم وتنسيق الحدائق وصيانة المساحات الخضراء بلمسة احترافية جميلة",
+      image: "/images/services/gardening.jpeg",
+      link: "/services/landscaping",
       icon: <Trees className="h-6 w-6" />,
       features: [
-        'تصميم الحدائق والمناظر',
-        'زراعة الأشجار والنباتات',
-        'تركيب أنظمة الري',
-        'قص وتهذيب الأشجار',
-        'تركيب العشب الطبيعي والصناعي',
+        "تصميم الحدائق والمناظر",
+        "زراعة الأشجار والنباتات",
+        "تركيب أنظمة الري",
+        "قص وتهذيب الأشجار",
+        "تركيب العشب الطبيعي والصناعي",
       ],
     },
     {
-      title: 'خدمات المقاولات',
+      title: "خدمات المقاولات",
       description:
-        'مقاولات عامة للبناء والترميم والتشطيبات بأعلى معايير الجودة والإتقان',
-      image: '/images/services/Contracting.jpeg',
-      link: '/services/contracting',
+        "مقاولات عامة للبناء والترميم والتشطيبات بأعلى معايير الجودة والإتقان",
+      image: "/images/services/Contracting.jpeg",
+      link: "/services/contracting",
       icon: <Building className="h-6 w-6" />,
       features: [
-        'بناء المنازل والفلل',
-        'ترميم وتجديد المباني',
-        'أعمال التشطيبات الداخلية',
-        'التصميم المعماري',
-        'إدارة المشاريع الإنشائية',
+        "بناء المنازل والفلل",
+        "ترميم وتجديد المباني",
+        "أعمال التشطيبات الداخلية",
+        "التصميم المعماري",
+        "إدارة المشاريع الإنشائية",
       ],
     },
     {
-      title: 'خدمات نقل العفش والأثاث',
+      title: "خدمات نقل العفش والأثاث",
       description:
-        'نقل الأثاث والعفش بأمان تام مع التغليف المتخصص وفريق محترف للنقل',
-      image: '/images/services/cleaning.jpeg',
-      link: '/services/fernature',
+        "نقل الأثاث والعفش بأمان تام مع التغليف المتخصص وفريق محترف للنقل",
+      image: "/images/services/cleaning.jpeg",
+      link: "/services/fernature",
       icon: <Truck className="h-6 w-6" />,
       features: [
-        'تغليف الأثاث المتخصص',
-        'نقل آمن بدون خدوش',
-        'فك وتركيب الأثاث',
-        'تأمين شامل על البضائع',
-        'نقل داخل وخارج المدينة',
+        "تغليف الأثاث المتخصص",
+        "نقل آمن بدون خدوش",
+        "فك وتركيب الأثاث",
+        "تأمين شامل על البضائع",
+        "نقل داخل وخارج المدينة",
       ],
     },
     {
-      title: 'خدمات العزل',
+      title: "خدمات العزل",
       description:
-        'عزل الأسطح والخزانات والحمامات بأحدث التقنيات والمواد العازلة عالية الجودة',
-      image: '/images/services/plumbing.jpeg',
-      link: '/services/insulation',
+        "عزل الأسطح والخزانات والحمامات بأحدث التقنيات والمواد العازلة عالية الجودة",
+      image: "/images/services/plumbing.jpeg",
+      link: "/services/insulation",
       icon: <Shield className="h-6 w-6" />,
       features: [
-        'عزل الأسطح المائي والحراري',
-        'عزل الخزانات العلوية',
-        'عزل الحمامات والمطابخ',
-        'عزل الجدران الخارجية',
-        'ضمان 10 سنوات על العزل',
+        "عزل الأسطح المائي والحراري",
+        "عزل الخزانات العلوية",
+        "عزل الحمامات والمطابخ",
+        "عزل الجدران الخارجية",
+        "ضمان 10 سنوات על العزل",
       ],
     },
   ];
@@ -153,62 +153,62 @@ export default function HomePage() {
   const whyUsFeatures = [
     {
       icon: <Shield className="h-12 w-12 text-primary" />,
-      title: 'مؤمنون ومرخصون',
+      title: "مؤمنون ومرخصون",
       description:
-        'نحن شركة مرخصة رسمياً ومؤمنة ضد جميع المخاطر لضمان راحة بالكم وحماية ممتلكاتكم',
+        "نحن شركة مرخصة رسمياً ومؤمنة ضد جميع المخاطر لضمان راحة بالكم وحماية ممتلكاتكم",
     },
     {
       icon: <Clock className="h-12 w-12 text-primary" />,
-      title: 'سرعة في التنفيذ',
+      title: "سرعة في التنفيذ",
       description:
-        'نلتزم بالمواعيد المحددة وننجز العمل في الوقت المطلوب دون تأخير مع الحفاظ על الجودة',
+        "نلتزم بالمواعيد المحددة وننجز العمل في الوقت المطلوب دون تأخير مع الحفاظ על الجودة",
     },
     {
       icon: <Users className="h-12 w-12 text-primary" />,
-      title: 'فريق متخصص',
+      title: "فريق متخصص",
       description:
-        'فريق من الخبراء والفنيين المتخصصين مع سنوات من الخبرة في جميع أنواع الخدمات المنزلية',
+        "فريق من الخبراء والفنيين المتخصصين مع سنوات من الخبرة في جميع أنواع الخدمات المنزلية",
     },
     {
       icon: <Award className="h-12 w-12 text-primary" />,
-      title: 'ضمان الجودة',
+      title: "ضمان الجودة",
       description:
-        'نقدم ضمان شامل על جميع خدماتنا مع إمكانية المراجعة والتعديل حتى تحصلوا על النتيجة المطلوبة',
+        "نقدم ضمان شامل על جميع خدماتنا مع إمكانية المراجعة والتعديل حتى تحصلوا על النتيجة المطلوبة",
     },
   ];
 
   const recentWorks = [
     {
-      id: '1',
-      title: 'تنظيف شامل لفيلا سكنية',
+      id: "1",
+      title: "تنظيف شامل لفيلا سكنية",
       description:
-        'تنظيف شامل لفيلا من 3 طوابق مع التعقيم الكامل وتنظيف الحديقة',
-      image: '/images/works1.jpeg',
-      category: 'تنظيف',
-      location: 'الرياض',
-      date: 'ديسمبر 2024',
-      client: 'عائلة السعد',
+        "تنظيف شامل لفيلا من 3 طوابق مع التعقيم الكامل وتنظيف الحديقة",
+      image: "/images/works1.jpeg",
+      category: "تنظيف",
+      location: "الرياض",
+      date: "ديسمبر 2024",
+      client: "عائلة السعد",
     },
     {
-      id: '2',
-      title: 'صيانة نظام التكييف المركزي',
-      description: 'صيانة وإصلاح نظام التكييف المركزي في مجمع سكني كبير',
-      image: '/images/works3.jpeg',
-      category: 'صيانة',
-      location: 'جدة',
-      date: 'نوفمبر 2024',
-      client: 'شركة العقارات المتطورة',
+      id: "2",
+      title: "صيانة نظام التكييف المركزي",
+      description: "صيانة وإصلاح نظام التكييف المركزي في مجمع سكني كبير",
+      image: "/images/works3.jpeg",
+      category: "صيانة",
+      location: "جدة",
+      date: "نوفمبر 2024",
+      client: "شركة العقارات المتطورة",
     },
     {
-      id: '3',
-      title: 'تنسيق حديقة منزلية',
+      id: "3",
+      title: "تنسيق حديقة منزلية",
       description:
-        'تصميم وتنسيق حديقة منزلية مع نظام ري أوتوماتيكي ومناظر طبيعية',
-      image: '/images/works3.jpeg',
-      category: 'تنسيق حدائق',
-      location: 'الدمام',
-      date: 'أكتوبر 2024',
-      client: 'مؤسسة البناء الحديث',
+        "تصميم وتنسيق حديقة منزلية مع نظام ري أوتوماتيكي ومناظر طبيعية",
+      image: "/images/works3.jpeg",
+      category: "تنسيق حدائق",
+      location: "الدمام",
+      date: "أكتوبر 2024",
+      client: "مؤسسة البناء الحديث",
     },
   ];
 
@@ -217,7 +217,7 @@ export default function HomePage() {
       <section className="relative">
         <ImageCarousel
           slides={heroSlides}
-          autoPlay={true}
+          autoPlay={false}
           autoPlayInterval={6000}
           overlayContent={true}
           height="h-[70vh]"
