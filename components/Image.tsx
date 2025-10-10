@@ -1,4 +1,3 @@
-import React from "react";
 import Image, { type ImageProps } from "next/image";
 
 export function Img(props: ImageProps) {
@@ -13,9 +12,10 @@ export function Img(props: ImageProps) {
       src={src}
       alt={alt}
       style={style}
-      className={className}
-      width={800}
-      height={600}
+      fill
+      className={`object-cover ${className || ""}`}
+      priority={false}
+      sizes="100vw"
       {...rest}
     />
   );
