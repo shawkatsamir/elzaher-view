@@ -16,6 +16,8 @@ import {
   Trees,
   Building,
   Truck,
+  MessageCircle,
+  Phone,
 } from "lucide-react";
 import { WhatsAppButton } from "@/components/ui/WhatsappButton";
 import { CallButton } from "@/components/ui/CallButton";
@@ -23,7 +25,7 @@ import { CallButton } from "@/components/ui/CallButton";
 export default function HomePage() {
   const heroSlides = [
     {
-      src: "/images/services/cleaning.webp",
+      src: "/images/cleaning-1.jpeg",
       title: "شركة الزاهر فيو للخدمات المنزلية",
       subtitle:
         "نقدم لكم أفضل خدمات التنظيف والصيانة المنزلية بأعلى جودة وأفضل الأسعار في جميع أنحاء المملكة العربية السعودية",
@@ -332,8 +334,32 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <CallButton />
-            <WhatsAppButton />
+            <Button
+              size="lg"
+              className="flex items-center space-x-2 space-x-reverse"
+              asChild
+            >
+              <a href="tel:+966590123782">
+                <Phone className="h-5 w-5" />
+                <span>اتصل الآن</span>
+              </a>
+            </Button>
+
+            <Button
+              size="lg"
+              variant="outline"
+              className="flex items-center space-x-2 space-x-reverse"
+              asChild
+            >
+              <a
+                href="https://wa.me/966590123782"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle className="h-5 w-5" />
+                <span>واتساب</span>
+              </a>
+            </Button>
           </div>
         </div>
       </section>

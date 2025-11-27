@@ -81,6 +81,7 @@ export function ImageCarousel({
             alt={currentSlide?.title || ""}
             className="transition-transform duration-500"
             priority={currentIndex === 0}
+            fetchPriority="high"
           />
         </div>
 

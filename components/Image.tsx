@@ -1,6 +1,8 @@
 import Image, { type ImageProps } from "next/image";
 
-export function Img(props: ImageProps & { fetchPriority?: string }) {
+export function Img(
+  props: ImageProps & { fetchPriority?: string; containerClassName?: string },
+) {
   const {
     src,
     alt,
@@ -9,7 +11,8 @@ export function Img(props: ImageProps & { fetchPriority?: string }) {
     fill = true,
     priority,
     fetchPriority,
-    loading = priority ? "eager" : "lazy",
+    loading,
+    containerClassName,
     ...rest
   } = props;
 
@@ -35,7 +38,9 @@ export function Img(props: ImageProps & { fetchPriority?: string }) {
 
   // Use fill mode
   return (
-    <div className="relative h-full w-full">
+    <div
+      className={`relative w-full ${containerClassName ? containerClassName : "h-full"}`}
+    >
       <Image
         src={src}
         alt={alt}
@@ -50,19 +55,9 @@ export function Img(props: ImageProps & { fetchPriority?: string }) {
         priority={priority}
         loading={loading}
         className={`object-cover ${className || ""}`}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        sizes={rest.sizes || "100vw"}
         {...rest}
       />
     </div>
-  );
-
-  return (
-    <Image
-      src={src}
-      alt={alt}
-      style={style}
-      className={`object-cover ${className || ""}`}
-      {...rest}
-    />
   );
 }
