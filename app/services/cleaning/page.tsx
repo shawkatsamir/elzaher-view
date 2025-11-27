@@ -8,6 +8,8 @@ import {
   Sparkles,
   Users,
   ChevronDown,
+  MessageCircle,
+  Phone,
 } from "lucide-react";
 import { Badge } from "../../../components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -15,8 +17,6 @@ import { Img } from "../../../components/Image";
 import { SubServiceCard } from "../../../components/SubServiceCard";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { Card, CardContent } from "@/components/ui/Card";
-import { CallButton } from "@/components/ui/CallButton";
-import { WhatsAppButton } from "@/components/ui/WhatsappButton";
 
 export default function CleaningPage() {
   const galleryImages = [
@@ -464,7 +464,8 @@ export default function CleaningPage() {
                   <Img
                     src={project.image}
                     alt={project.title}
-                    className="h-48 w-full rounded-t-lg object-cover"
+                    containerClassName="h-48 w-full rounded-t-lg"
+                    className="object-cover"
                   />
                   <div className="p-6">
                     <Badge variant="secondary" className="mb-2">
@@ -524,10 +525,33 @@ export default function CleaningPage() {
             تواصل معنا الآن لحجز موعد التنظيف أو للحصول على عرض أسعار مجاني
           </p>
 
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <CallButton />
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Button
+              size="lg"
+              className="flex items-center space-x-2 space-x-reverse"
+              asChild
+            >
+              <a href="tel:+966590123782">
+                <Phone className="h-5 w-5" />
+                <span>اتصل الآن</span>
+              </a>
+            </Button>
 
-            <WhatsAppButton />
+            <Button
+              size="lg"
+              variant="outline"
+              className="flex items-center space-x-2 space-x-reverse"
+              asChild
+            >
+              <a
+                href="https://wa.me/966590123782"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle className="h-5 w-5" />
+                <span>واتساب</span>
+              </a>
+            </Button>
           </div>
         </div>
       </section>

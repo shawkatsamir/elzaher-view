@@ -1,10 +1,10 @@
-import { Card, CardContent } from './ui/Card';
-import { CheckCircle } from 'lucide-react';
-import { Img } from './Image';
+import { Card, CardContent } from "./ui/Card";
+import { CheckCircle } from "lucide-react";
+import { Img } from "./Image";
 
 interface SubServiceCardProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   features: string[];
   image?: string;
 }

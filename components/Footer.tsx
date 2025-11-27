@@ -45,13 +45,13 @@ export function Footer() {
 
   return (
     <footer className="bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
             <h3 className="text-2xl font-bold text-blue-400">
               شركة الزاهر فيو
             </h3>
-            <p className="text-gray-300 leading-relaxed">
+            <p className="leading-relaxed text-gray-300">
               نقدم أفضل الخدمات المنزلية بجودة عالية و مهنية متميزة. فريفنا
               المتخصص جاهز لخدمتكم علي مدار الساعة
             </p>
@@ -61,7 +61,7 @@ export function Footer() {
                 <Link
                   key={index}
                   href={item.href}
-                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  className="text-gray-400 transition-colors hover:text-blue-400"
                 >
                   {item.icon}
                 </Link>
@@ -70,13 +70,13 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-blue-400 text-lg font-semibold">روابط سريعة</h4>
+            <h4 className="text-lg font-semibold text-blue-400">روابط سريعة</h4>
             <ul className="space-y-2">
               {quickLinks.map((link, index) => (
                 <li key={index}>
                   <Link
                     href={link.href}
-                    className="text-gray-300 hover:text-white transition-colors text-right"
+                    className="text-right text-gray-300 transition-colors hover:text-white"
                   >
                     {link.name}
                   </Link>
@@ -93,12 +93,12 @@ export function Footer() {
                   <li key={index}>
                     <Link
                       href={service.href}
-                      className="text-gray-300 hover:text-white transition-colors text-right"
+                      className="text-right text-gray-300 transition-colors hover:text-white"
                     >
                       {service.name}
                     </Link>
                   </li>
-                ) : null
+                ) : null,
               )}
             </ul>
           </div>
@@ -109,15 +109,15 @@ export function Footer() {
             </h4>
             <div className="space-y-3">
               <div className="flex items-center space-x-3 space-x-reverse">
-                <LuPhone className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                <span className="text-gray-300">+966 50 123 4567</span>
+                <LuPhone className="h-5 w-5 flex-shrink-0 text-blue-400" />
+                <span className="text-gray-300">+966590123782</span>
               </div>
               <div className="flex items-center space-x-3 space-x-reverse">
-                <LuMail className="h-5 w-5 text-blue-400 flex-shrink-0" />
+                <LuMail className="h-5 w-5 flex-shrink-0 text-blue-400" />
                 <span className="text-gray-300">info@alzaherview.com</span>
               </div>
               <div className="flex items-start space-x-3 space-x-reverse">
-                <LuMapPin className="h-5 w-5 text-blue-400 flex-shrink-0 mt-1" />
+                <LuMapPin className="mt-1 h-5 w-5 flex-shrink-0 text-blue-400" />
                 <span className="text-gray-300">
                   الرياض، المملكة العربية السعودية
                 </span>

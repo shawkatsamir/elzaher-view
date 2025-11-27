@@ -31,12 +31,14 @@ export function ServiceCard({
     <div className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200 relative">
       <div className="p-6 pb-4">
         {image ? (
-          <div className="w-full h-48 mb-4 rounded-lg overflow-hidden">
-            <Img
-              src={image}
-              alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
+          <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+            <div className="absolute inset-0">
+              <Img
+                src={image}
+                alt={title}
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
         ) : (
           icon && (
