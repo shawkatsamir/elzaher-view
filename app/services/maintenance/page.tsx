@@ -8,16 +8,12 @@ import { Card, CardContent } from "../../../components/ui/Card";
 import { ImageCarousel } from "@/components/ImageCarousel";
 
 import {
-  Truck,
-  Package,
   Shield,
   CheckCircle,
   Clock,
   Home,
-  Building,
   Phone,
   MessageCircle,
-  MapPin,
   Users,
   Award,
   ChevronDown,
