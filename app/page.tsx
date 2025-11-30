@@ -19,8 +19,6 @@ import {
   MessageCircle,
   Phone,
 } from "lucide-react";
-import { WhatsAppButton } from "@/components/ui/WhatsappButton";
-import { CallButton } from "@/components/ui/CallButton";
 
 export default function HomePage() {
   const heroSlides = [
@@ -294,7 +292,7 @@ export default function HomePage() {
               أحدث أعمالنا
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              اطلعوا על بعض من أحدث المشاريع التي أنجزناها بنجاح ل��ملائنا
+              اطلعوا علي بعض من أحدث المشاريع التي أنجزناها بنجاح لعملائنا
               الكرام
             </p>
           </div>

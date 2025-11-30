@@ -6,6 +6,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Breadcrumbs } from "@/components/BreadCrumbs";
 import { Footer } from "@/components/Footer";
+import { StickyContactButons } from "@/components/StickyContactButton";
 
 export const metadata: Metadata = {
   title: "شركة الزاهر فيو",
@@ -36,6 +37,7 @@ export default function RootLayout({
           <SpeedInsights />
         </main>
         <Footer />
+        <StickyContactButons />
       </body>
     </html>
   );
