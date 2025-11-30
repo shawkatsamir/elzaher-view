@@ -8,12 +8,9 @@ import {
   Clock,
   ArrowLeft,
   ArrowRight,
-  SeparatorVertical,
   User,
   MessageCircle,
   Phone,
-  SeparatorHorizontal,
-  SeparatorHorizontalIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";

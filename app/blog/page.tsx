@@ -9,7 +9,6 @@ import {
   BookOpen,
   TrendingUp,
   Eye,
-  Badge,
   ArrowLeft,
 } from "lucide-react";
 import { client } from "../../sanity/client";
@@ -43,11 +42,7 @@ interface Post {
   category: Category;
 }
 
-interface BlogPageProps {
-  onNavigateToArticle?: (articleId: string) => void;
-}
-
-export default function BlogPage({ onNavigateToArticle }: BlogPageProps) {
+export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);

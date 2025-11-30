@@ -19,8 +19,6 @@ import { Button } from "@/components/ui/Button";
 import { Img } from "@/components/Image";
 import { SubServiceCard } from "@/components/SubServiceCard";
 import { ImageCarousel } from "@/components/ImageCarousel";
-import { CallButton } from "@/components/ui/CallButton";
-import { WhatsAppButton } from "@/components/ui/WhatsappButton";
 
 export default function ContractingPage() {
   const subServices = [
