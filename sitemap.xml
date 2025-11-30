@@ -81,81 +81,11 @@
 
   <!-- مقالات التنظيف -->
   <url>
-    <loc>https://alzaherview.com/blog/daleel-shamel-tandhif-manzil-rabi</loc>
+    <loc>https://alzaherview.com/blog/التنظيف/طريقة-تنظيف-الكنب-بالبخار</loc>
     <lastmod>2024-11-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <url>
-    <loc>https://alzaherview.com/blog/tandhif-khanab-mafrushat-steam</loc>
-    <lastmod>2024-10-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://alzaherview.com/blog/tandhif-matbakh-tips-professional</loc>
-    <lastmod>2024-10-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://alzaherview.com/blog/tandhif-sajjad-turuq-hirafiya</loc>
-    <lastmod>2024-10-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://alzaherview.com/blog/tandhif-hammam-daleel-kamil</loc>
-    <lastmod>2024-10-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://alzaherview.com/blog/tandhif-zawajij-turuq-sahla</loc>
-    <lastmod>2024-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- مقالات الصيانة -->
-  <url>
-    <loc>https://alzaherview.com/blog/siyanat-takyyif-manzili-daleel-shamel</loc>
-    <lastmod>2024-11-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://alzaherview.com/blog/siyanat-ghassalat-washaher-mashakel</loc>
-    <lastmod>2024-10-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://alzaherview.com/blog/siyanat-thallajat-khutawat-ihtirafiya</loc>
-    <lastmod>2024-10-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://alzaherview.com/blog/siyanat-kahrabaiya-manziliya-aman</loc>
-    <lastmod>2024-10-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://alzaherview.com/blog/siyanat-sihhi-kashf-tasribat</loc>
-    <lastmod>2024-10-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
 
 </urlset>
