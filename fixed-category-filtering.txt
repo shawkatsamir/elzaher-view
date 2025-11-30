@@ -1,0 +1,43 @@
+Fixed Category Filtering for Arabic Slugs
+Problem
+Posts in categories with Arabic slugs (like "التنظيف" for cleaning) were not appearing when navigating to category-specific pages (e.g., /blog/التنظيف), but they appeared correctly on the main blog page showing all articles.
+
+Root Cause
+When Arabic or other non-ASCII characters are used in URLs, browsers automatically URL-encode them. For example:
+
+Original slug: "التنظيف"
+URL-encoded: "%D8%A7%D9%84%D8%AA%D9%86%D8%B8%D9%8A%D9%81"
+The category slug from the URL was being passed directly to the Sanity query without decoding, so it was trying to match "%D8%A7%D9%84%D8%AA%D9%86%D8%B8%D9%8A%D9%81" instead of "التنظيف".
+
+Solution
+Added decodeURIComponent() to decode the URL-encoded category slug before using it in:
+
+1. Sanity Query Parameter
+const decodedCategorySlug = decodeURIComponent(categorySlug);
+client.fetch(POSTS_BY_CATEGORY_QUERY, { categorySlug: decodedCategorySlug })
+2. Category Lookup
+const currentCategory = categories.find(
+  (c) => c.slug.current === decodedCategorySlug,
+);
+3. Active Category Highlighting
+className={`... ${
+  decodedCategorySlug === category.slug.current
+    ? "bg-primary-600 text-white shadow-md"
+    : "bg-white text-gray-600 hover:bg-gray-100"
+}`}
+Changes Made
+page.tsx
+Added URL decoding in the useEffect hook before fetching data
+Updated currentCategory lookup to use decoded slug
+Updated active category comparison to use decoded slug
+Added debug logging to track encoded vs decoded values
+Verification
+✅ The GROQ query works correctly in Sanity Vision with the decoded slug ✅ Posts now appear when navigating to category pages with Arabic slugs ✅ The correct category is highlighted in the navigation ✅ Debug logs show both encoded and decoded values for troubleshooting
+
+Testing
+To verify the fix works:
+
+Navigate to a category page with an Arabic slug (e.g., /blog/التنظيف)
+Verify posts in that category are displayed
+Check the browser console to see the decoded slug being used
+Verify the category button is highlighted correctly

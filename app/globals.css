@@ -180,10 +180,10 @@ a:focus {
 /* Responsive typography */
 @screen sm {
   h1 {
-    font-size: 2.25rem;
+    font-size: 2rem;
   }
   h2 {
-    font-size: 1.875rem;
+    font-size: 1.7rem;
   }
   h3 {
     font-size: 1.5rem;

@@ -1,7 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image, { type ImageProps } from "next/image";
 
+import { urlFor } from "../sanity/lib/image";
+
+type SanityImageSource = any; // Using any to match sanity/lib/image usage
+
 export function Img(
-  props: ImageProps & { fetchPriority?: string; containerClassName?: string },
+  props: Omit<ImageProps, "src"> & {
+    src: string | SanityImageSource;
+    fetchPriority?: string;
+    containerClassName?: string;
+  },
 ) {
   const {
     src,
@@ -20,11 +29,21 @@ export function Img(
     return null;
   }
 
+  // Handle Sanity image source
+  let imageSrc;
+  try {
+    imageSrc =
+      typeof src === "string" || (src as any).src ? src : urlFor(src).url();
+  } catch (error) {
+    console.error("Error generating image URL:", error);
+    return null;
+  }
+
   // If width and height are provided, or fill is explicitly set to false, use standard image
   if ("width" in rest || "height" in rest || fill === false) {
     return (
       <Image
-        src={src}
+        src={imageSrc}
         alt={alt}
         style={style}
         fetchPriority={fetchPriority}
@@ -42,7 +61,7 @@ export function Img(
       className={`relative w-full ${containerClassName ? containerClassName : "h-full"}`}
     >
       <Image
-        src={src}
+        src={imageSrc}
         alt={alt}
         style={{
           ...style,

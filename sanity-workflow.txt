@@ -1,0 +1,64 @@
+Sanity Workflow Guide
+This guide explains the complete flow of data in your application, from defining the structure to displaying it on the screen.
+
+1. Setup & Configuration
+Files: 
+sanity.config.ts
+, 
+sanity/env.ts
+, 
+sanity/client.ts
+
+sanity.config.ts
+: The main configuration file. It tells Sanity your Project ID, Dataset name, and which plugins to use (like structureTool for the Studio).
+sanity/client.ts
+: Creates the client instance used to fetch data. It connects to the Sanity API using the config from 
+env.ts
+.
+2. Defining Content (Schema)
+Files: sanity/schemaTypes/ (e.g., post.ts, category.ts)
+
+Before you can add content, you must define what it looks like.
+
+Schemas: You define "types" (like post).
+Fields: Inside a type, you define fields (title, slug, image, body).
+Registration: These types are imported in sanity/schemaTypes/index.ts and passed to sanity.config.ts.
+3. Creating Content (The Studio)
+Location: http://localhost:3000/studio File: app/studio/[[...index]]/page.tsx
+
+The Studio is an embedded React app.
+When you visit /studio, Next.js renders the Studio.
+You log in, create documents (Posts), and hit Publish.
+Data Storage: The data is saved to Sanity's cloud database (the "Content Lake").
+4. Querying Data (GROQ)
+File: sanity/lib/queries.ts
+
+To get data back out, we use GROQ (Graph-Relational Object Queries).
+
+POSTS_QUERY: Asks for all posts, ordered by date.
+POST_QUERY: Asks for a single post where the slug matches.
+Projections: We specify exactly which fields we want (e.g., { title, mainImage }) to keep the app fast.
+5. Fetching Data (Server Components)
+Files: app/blog/page.tsx, app/blog/[slug]/page.tsx
+
+In Next.js App Router, we fetch data directly in the component.
+
+// 1. Import the client and query
+import { client } from "../../sanity/client";
+import { POST_QUERY } from "../../sanity/lib/queries";
+// 2. Fetch the data (async/await)
+const post = await client.fetch(POST_QUERY, { slug });
+6. Rendering Data
+Files: app/blog/[slug]/page.tsx, components/Image.tsx
+
+Once we have the post object, we render it using React.
+
+Text: {post.title}
+Images: We use your smart <Img src={post.mainImage} /> component. It uses urlFor() internally to convert the Sanity image object into a real URL.
+Rich Text: We use <PortableText value={post.body} /> to render the complex block content (paragraphs, lists, images) stored in the body field.
+Summary Flow
+Define post schema.
+Create post in Studio.
+Write GROQ query to find it.
+Fetch it in the Page component.
+Render it with React & PortableText.
