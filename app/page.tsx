@@ -19,6 +19,7 @@ import {
   MessageCircle,
   Phone,
 } from "lucide-react";
+import OrganizationJsonLd from "./_components/OrganizationJsonLd";
 
 export default function HomePage() {
   const heroSlides = [
@@ -214,6 +215,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
+      <OrganizationJsonLd />
       <section className="relative">
         <ImageCarousel
           slides={heroSlides}

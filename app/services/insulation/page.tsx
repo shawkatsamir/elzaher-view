@@ -21,6 +21,7 @@ import {
   Thermometer,
   Users,
 } from "lucide-react";
+import ServiceJsonLd from "@/app/_components/ServiceJsonLd";
 
 const insulationTypes = [
   {
@@ -263,6 +264,12 @@ const workSteps = [
 export default function InsulationPage() {
   return (
     <div className="min-h-screen">
+      <ServiceJsonLd
+        name="خدمات العزل الشاملة"
+        description="نوفر خدمات العزل الحراري والمائي والصوتي باستخدام أجود المواد العازلة وأحدث التقنيات العالمية. فريقنا المتخصص لديه خبرة واسعة في جميع أنواع أعمال العزل مع ضمان طويل المدى."
+        image="/images/services/cleaning.webp"
+        url="/services/insulation"
+      />
       <section className="relative bg-gradient-to-br from-blue-50 to-blue-100 py-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">

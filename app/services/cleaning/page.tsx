@@ -17,6 +17,7 @@ import { Img } from "../../../components/Image";
 import { SubServiceCard } from "../../../components/SubServiceCard";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { Card, CardContent } from "@/components/ui/Card";
+import ServiceJsonLd from "@/app/_components/ServiceJsonLd";
 
 export default function CleaningPage() {
   const galleryImages = [
@@ -226,6 +227,12 @@ export default function CleaningPage() {
 
   return (
     <div className="min-h-screen">
+      <ServiceJsonLd
+        name="خدمات التنظيف"
+        description="نقدم خدمات تنظيف شاملة للمنازل والمكاتب والفلل بأعلى معايير الجودة والنظافة."
+        image="/images/services/cleaning.webp"
+        url="/services/cleaning"
+      />
       <section className="relative bg-gradient-to-br from-blue-50 to-blue-100 py-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">

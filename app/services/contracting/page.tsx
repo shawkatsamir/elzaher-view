@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/Button";
 import { Img } from "@/components/Image";
 import { SubServiceCard } from "@/components/SubServiceCard";
 import { ImageCarousel } from "@/components/ImageCarousel";
+import ServiceJsonLd from "@/app/_components/ServiceJsonLd";
 
 export default function ContractingPage() {
   const subServices = [
@@ -148,6 +149,12 @@ export default function ContractingPage() {
   ];
   return (
     <div className="min-h-screen">
+      <ServiceJsonLd
+        name="خدمات المقاولات العامة"
+        description="شركة الزاهر فيو للمقاولات العامة - مقاول معتمد في السعودية نقدم خدمات البناء والتشطيب والترميم وتركيب البلاط والرخام والخشب المضغوط بأعلى معايير الجودة والاحترافية."
+        image="/images/cleaning-1.jpeg"
+        url="/services/contracting"
+      />
       <section className="relative bg-gradient-to-br from-amber-50 to-amber-100 py-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">

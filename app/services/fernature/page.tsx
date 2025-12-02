@@ -6,6 +6,7 @@ import { Badge } from "../../../components/ui/Badge";
 import { SubServiceCard } from "../../../components/SubServiceCard";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { ImageCarousel } from "@/components/ImageCarousel";
+import ServiceJsonLd from "@/app/_components/ServiceJsonLd";
 
 import {
   Truck,
@@ -203,6 +204,12 @@ export default function MovingServicePage() {
 
   return (
     <main className="flex-1">
+      <ServiceJsonLd
+        name="خدمات نقل العفش والأثاث"
+        description="نوفر خدمات نقل الأثاث والعفش بأمان تام مع فريق متخصص ومعدات حديثة. نضمن وصول ممتلكاتكم بحالة ممتازة مع التغليف المحترف والنقل الآمن."
+        image="/images/services/cleaning.webp"
+        url="/services/fernature"
+      />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-purple-50 to-purple-100 py-20">
         <div className="container mx-auto px-4">
