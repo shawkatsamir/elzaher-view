@@ -6,6 +6,7 @@ import { Badge } from "../../../components/ui/Badge";
 import { SubServiceCard } from "../../../components/SubServiceCard";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { ImageCarousel } from "@/components/ImageCarousel";
+import ServiceJsonLd from "@/app/_components/ServiceJsonLd";
 
 import {
   Shield,
@@ -201,6 +202,12 @@ const workSteps = [
 export default function MaintenanceServicePage() {
   return (
     <main className="flex-1">
+      <ServiceJsonLd
+        name="خدمات الصيانة الشاملة"
+        description="نقدم خدمات صيانة متكاملة للتكييف والأجهزة الكهربائية والأنظمة الكهربائية. فريق من الفنيين المتخصصين متاح لتلبية جميع احتياجاتكم من الصيانة والإصلاح."
+        image="/images/services/cleaning.webp"
+        url="/services/maintenance"
+      />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-indigo-50 to-indigo-100 py-20">
         <div className="container mx-auto px-4">

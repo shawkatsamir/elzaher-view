@@ -6,6 +6,7 @@ import { Badge } from "../../../components/ui/Badge";
 import { SubServiceCard } from "../../../components/SubServiceCard";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { ImageCarousel } from "@/components/ImageCarousel";
+import ServiceJsonLd from "@/app/_components/ServiceJsonLd";
 
 import {
   Shield,
@@ -180,6 +181,12 @@ const workSteps = [
 export default function PlumbingServicePage() {
   return (
     <main className="flex-1">
+      <ServiceJsonLd
+        name="خدمات التسليك وكشف التسريبات"
+        description="نوفر خدمات كشف التسريبات وتسليك المجاري بأحدث التقنيات والمعدات المتطورة. فريق من الخبراء المتخصصين متاح على مدار الساعة لحل جميع مشاكل السباكة."
+        image="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=600&h=400&fit=crop"
+        url="/services/plumbing"
+      />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-cyan-50 to-cyan-100 py-20">
         <div className="container mx-auto px-4">

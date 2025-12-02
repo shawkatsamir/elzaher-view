@@ -6,6 +6,7 @@ import { Badge } from "../../../components/ui/Badge";
 import { SubServiceCard } from "../../../components/SubServiceCard";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { ImageCarousel } from "@/components/ImageCarousel";
+import ServiceJsonLd from "@/app/_components/ServiceJsonLd";
 
 import {
   Shield,
@@ -195,6 +196,12 @@ const workSteps = [
 export default function LandscapingServicePage() {
   return (
     <main className="flex-1">
+      <ServiceJsonLd
+        name="تصميم وتنسيق الحدائق"
+        description="نقدم خدمات تصميم وتنسيق الحدائق بأفكار عصرية وإبداعية. فريق من المهندسين الزراعيين والفنيين المتخصصين لتحويل مساحتكم الخارجية إلى واحة خضراء جميلة."
+        image="https://images.unsplash.com/photo-1558904541-efa843a96f01?w=600&h=400&fit=crop"
+        url="/services/landscaping"
+      />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-green-50 to-green-100 py-20">
         <div className="container mx-auto px-4">
