@@ -13,7 +13,7 @@ import { client } from "../../sanity/client";
 import { POSTS_QUERY, CATEGORIES_QUERY } from "../../sanity/lib/queries";
 import Link from "next/link";
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 60;
 
 interface Category {
   _id: string;
