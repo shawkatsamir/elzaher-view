@@ -17,7 +17,7 @@ import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const posts = await client.fetch<Post[]>(POSTS_QUERY);
@@ -182,6 +182,25 @@ export default async function PostPage({ params }: PostPageProps) {
                       },
                     }}
                   />
+
+                  {/* Keywords Section */}
+                  {post.keywords && post.keywords.length > 0 && (
+                    <div className="mt-8 border-t pt-6">
+                      <h3 className="mb-3 text-sm font-bold text-gray-900">
+                        الكلمات الدلالية
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {post.keywords.map((keyword) => (
+                          <span
+                            key={keyword}
+                            className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-200"
+                          >
+                            {keyword}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
