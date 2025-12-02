@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Img } from "../../../components/Image";
 import {
   Calendar,
@@ -16,7 +14,9 @@ import {
   CATEGORIES_QUERY,
 } from "../../../sanity/lib/queries";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
+
+export const revalidate = 60; // Revalidate every 60 seconds
 
 interface Category {
   _id: string;
@@ -45,66 +45,30 @@ interface Post {
   category: Category;
 }
 
-export default function CategoryPage() {
-  const params = useParams();
-  const categorySlug = params.category as string;
+interface CategoryPageProps {
+  params: Promise<{ category: string }>;
+}
 
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+export default async function CategoryPage({ params }: CategoryPageProps) {
+  const { category } = await params;
+  const decodedCategorySlug = decodeURIComponent(category);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        // Decode the URL-encoded category slug (important for Arabic/non-ASCII slugs)
-        const decodedCategorySlug = decodeURIComponent(categorySlug);
-
-        console.log("🔍 Category slug from URL (encoded):", categorySlug);
-        console.log("🔍 Category slug (decoded):", decodedCategorySlug);
-        console.log("🔍 Fetching posts with params:", {
-          categorySlug: decodedCategorySlug,
-        });
-
-        const [postsData, categoriesData] = await Promise.all([
-          client.fetch(POSTS_BY_CATEGORY_QUERY, {
-            categorySlug: decodedCategorySlug,
-          }),
-          client.fetch(CATEGORIES_QUERY),
-        ]);
-
-        console.log("📊 Posts returned:", postsData.length, postsData);
-        console.log("📂 All categories:", categoriesData);
-
-        setPosts(postsData);
-        setCategories(categoriesData);
-      } catch (error) {
-        console.error("Error fetching blog data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (categorySlug) {
-      fetchData();
-    }
-  }, [categorySlug]);
-
-  const featuredPost = posts[0];
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-b-2 border-t-2"></div>
-      </div>
-    );
-  }
-
-  const decodedCategorySlug = decodeURIComponent(categorySlug);
+  const [posts, categories] = await Promise.all([
+    client.fetch<Post[]>(POSTS_BY_CATEGORY_QUERY, {
+      categorySlug: decodedCategorySlug,
+    }),
+    client.fetch<Category[]>(CATEGORIES_QUERY),
+  ]);
 
   const currentCategory = categories.find(
     (c) => c.slug.current === decodedCategorySlug,
   );
+
+  if (!currentCategory && posts.length === 0) {
+    notFound();
+  }
+
+  const featuredPost = posts[0];
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24">
@@ -182,7 +146,7 @@ export default function CategoryPage() {
                       </div>
                     </div>
                     <Link
-                      href={`/blog/${categorySlug}/${featuredPost.slug.current}`}
+                      href={`/blog/${decodedCategorySlug}/${featuredPost.slug.current}`}
                       className="text-primary-600 hover:text-primary-700 flex items-center font-medium"
                     >
                       Read More <ArrowRight className="ml-2 h-4 w-4" />
@@ -268,7 +232,7 @@ export default function CategoryPage() {
                       </span>
                     </div>
                     <Link
-                      href={`/blog/${categorySlug}/${post.slug.current}`}
+                      href={`/blog/${decodedCategorySlug}/${post.slug.current}`}
                       className="text-primary-600 hover:text-primary-700 flex items-center text-sm font-medium"
                     >
                       Read <ArrowRight className="ml-1 h-3 w-3" />

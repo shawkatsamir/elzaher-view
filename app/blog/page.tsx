@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Img } from "../../components/Image";
 import {
   Calendar,
@@ -14,6 +12,8 @@ import {
 import { client } from "../../sanity/client";
 import { POSTS_QUERY, CATEGORIES_QUERY } from "../../sanity/lib/queries";
 import Link from "next/link";
+
+export const revalidate = 60; // Revalidate every 60 seconds
 
 interface Category {
   _id: string;
@@ -42,41 +42,14 @@ interface Post {
   category: Category;
 }
 
-export default function BlogPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [postsData, categoriesData] = await Promise.all([
-          client.fetch(POSTS_QUERY),
-          client.fetch(CATEGORIES_QUERY),
-        ]);
-        setPosts(postsData);
-        setCategories(categoriesData);
-      } catch (error) {
-        console.error("Error fetching blog data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+export default async function BlogPage() {
+  const [posts, categories] = await Promise.all([
+    client.fetch<Post[]>(POSTS_QUERY),
+    client.fetch<Category[]>(CATEGORIES_QUERY),
+  ]);
 
   const filteredPosts = posts;
-
   const featuredPost = posts[0]; // Assuming the first post is featured for now
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="border-primary-600 h-12 w-12 animate-spin rounded-full border-b-2 border-t-2"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24">

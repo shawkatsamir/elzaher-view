@@ -1,5 +1,5 @@
 import { client } from "../../../../sanity/client";
-import { POST_QUERY } from "../../../../sanity/lib/queries";
+import { POST_QUERY, POSTS_QUERY } from "../../../../sanity/lib/queries";
 
 import { PortableText } from "@portabletext/react";
 import { Img } from "../../../../components/Image";
@@ -16,6 +16,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+
+export const revalidate = 60; // Revalidate every 60 seconds
+
+export async function generateStaticParams() {
+  const posts = await client.fetch<Post[]>(POSTS_QUERY);
+
+  return posts.map((post) => ({
+    category: post.category?.slug.current,
+    slug: post.slug.current,
+  }));
+}
 
 interface Category {
   title: string;
