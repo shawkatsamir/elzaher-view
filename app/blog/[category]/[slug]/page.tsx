@@ -75,6 +75,8 @@ interface PostPageProps {
   params: Promise<{ category: string; slug: string }>;
 }
 
+import JsonLd from "@/app/_components/JsonLd";
+
 export default async function PostPage({ params }: PostPageProps) {
   const { category, slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
@@ -88,6 +90,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
   return (
     <article className="min-h-screen bg-white pt-24">
+      <JsonLd post={post} slug={decodedSlug} categorySlug={category} />
       {/* Hero Header */}
       <section className="relative bg-gradient-to-br from-indigo-50 to-indigo-100 py-12">
         <div className="container mx-auto px-4">
