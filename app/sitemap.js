@@ -16,14 +16,12 @@ export default async function sitemap() {
   }`;
   const categories = await client.fetch(categoriesQuery);
 
-  const staticRoutes = ["", "/blog", "/about", "/contact", "/services"].map(
-    (route) => ({
-      url: `${baseUrl}${route}`,
-      lastModified: new Date().toISOString(),
-      changeFrequency: "monthly",
-      priority: route === "" ? 1 : 0.8,
-    }),
-  );
+  const staticRoutes = ["", "/blog", "/services"].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "monthly",
+    priority: route === "" ? 1 : 0.8,
+  }));
 
   const categoryRoutes = categories.map((category) => ({
     url: `${baseUrl}/blog/${category.slug}`,
