@@ -16,7 +16,7 @@ export default async function sitemap() {
   }`;
   const categories = await client.fetch(categoriesQuery);
 
-  const staticRoutes = ["", "/blog", "/services"].map((route) => ({
+  const staticRoutes = ["", "/blog"].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
     changeFrequency: "monthly",
