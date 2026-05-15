@@ -83,6 +83,9 @@ export default function SubServiceHubTemplate({
                   src={subService.heroImage}
                   alt={subService.titleAr}
                   className="h-[400px] w-full object-cover"
+                  fetchPriority="high"
+                  loading="eager"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
             </div>

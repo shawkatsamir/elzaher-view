@@ -14,11 +14,21 @@ import {
   User,
   MessageCircle,
   Phone,
+  Lightbulb,
+  RotateCw,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import {
+  InfoCalloutBlock,
+  ComparisonTableBlock,
+  InternalServiceLinkBlock,
+  EmbeddedFaqBlock,
+  HowToStepsBlock,
+} from "../../_components/blog-blocks";
+import BlogPostJsonLd from "../../_components/blog-post-json-ld";
 
 export const revalidate = 60;
 
@@ -57,6 +67,32 @@ interface RelatedPost {
   category: Category;
 }
 
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface HowToStep {
+  name: string;
+  text: string;
+  image?: SanityImage;
+}
+
+interface AuthorRef {
+  _id: string;
+  name: string;
+  slug?: { current: string };
+  role?: string;
+  bio?: string;
+  photo?: SanityImage;
+  expertise?: string[];
+  yearsExperience?: number;
+  twitterUrl?: string;
+  linkedinUrl?: string;
+}
+
+type ArticleType = "Article" | "HowTo" | "Guide" | "Comparison" | "Listicle";
+
 interface Post {
   _id: string;
   title: string;
@@ -64,9 +100,16 @@ interface Post {
   slug: { current: string };
   mainImage: SanityImage;
   ogImage?: SanityImage;
+  featuredAnswer?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: any;
+  articleType?: ArticleType;
+  howToSteps?: HowToStep[];
+  postFaqs?: FaqItem[];
+  tocAuto?: boolean;
   publishedAt: string;
+  lastReviewedAt?: string;
+  author?: AuthorRef;
   authorName: string;
   authorRole: string;
   readTime: number;
@@ -74,8 +117,59 @@ interface Post {
   relatedPosts: RelatedPost[];
   relatedServices?: string[];
   relatedCity?: string;
+  targetKeywords?: string[];
   metaDescription?: string;
   keywords?: string[];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function computeWordCount(body: any[] | undefined): number {
+  if (!Array.isArray(body)) return 0;
+  let count = 0;
+  for (const block of body) {
+    if (block?._type === "block" && Array.isArray(block.children)) {
+      for (const child of block.children) {
+        if (typeof child?.text === "string") {
+          count += child.text.split(/\s+/).filter(Boolean).length;
+        }
+      }
+    } else if (block?._type === "infoCallout" && Array.isArray(block.body)) {
+      count += computeWordCount(block.body);
+    } else if (block?._type === "embeddedFaq" && Array.isArray(block.items)) {
+      for (const item of block.items) {
+        if (typeof item?.question === "string")
+          count += item.question.split(/\s+/).filter(Boolean).length;
+        if (typeof item?.answer === "string")
+          count += item.answer.split(/\s+/).filter(Boolean).length;
+      }
+    }
+  }
+  return count;
+}
+
+// Extract H2/H3 headings for TOC.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractHeadings(body: any[] | undefined): { id: string; text: string; level: 2 | 3 }[] {
+  if (!Array.isArray(body)) return [];
+  const headings: { id: string; text: string; level: 2 | 3 }[] = [];
+  for (const block of body) {
+    if (block?._type !== "block") continue;
+    const style = block.style;
+    if (style !== "h2" && style !== "h3") continue;
+    const text = Array.isArray(block.children)
+      ? block.children
+          .map((c: { text?: string }) => c?.text || "")
+          .join("")
+          .trim()
+      : "";
+    if (!text) continue;
+    const id = text
+      .replace(/[^\p{L}\p{N}\s-]/gu, "")
+      .replace(/\s+/g, "-")
+      .toLowerCase();
+    headings.push({ id, text, level: style === "h2" ? 2 : 3 });
+  }
+  return headings;
 }
 
 interface PostPageProps {
@@ -135,6 +229,13 @@ export async function generateMetadata({
   };
 }
 
+function slugifyHeading(text: string): string {
+  return text
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .replace(/\s+/g, "-")
+    .toLowerCase();
+}
+
 export default async function PostPage({ params }: PostPageProps) {
   const { category, slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
@@ -144,9 +245,25 @@ export default async function PostPage({ params }: PostPageProps) {
     notFound();
   }
 
+  const authorDisplayName = post.author?.name || post.authorName;
+  const authorDisplayRole = post.author?.role || post.authorRole;
+  const wordCount = computeWordCount(post.body);
+  const readTime = post.readTime || Math.max(1, Math.round(wordCount / 200));
+  const headings = post.tocAuto ? extractHeadings(post.body) : [];
+  const postPath = `/blog/${category}/${decodedSlug}`;
+
   return (
     <article className="min-h-screen bg-white pt-24">
       <JsonLd post={post} slug={decodedSlug} categorySlug={category} />
+      <BlogPostJsonLd
+        url={postPath}
+        name={post.seoTitle || post.title}
+        description={post.metaDescription || post.featuredAnswer || ""}
+        articleType={post.articleType}
+        howToSteps={post.howToSteps}
+        postFaqs={post.postFaqs}
+        image={post.ogImage || post.mainImage}
+      />
       {/* Hero Header */}
       <section className="relative bg-gradient-to-br from-indigo-50 to-indigo-100 py-12">
         <div className="container mx-auto px-4">
@@ -163,13 +280,22 @@ export default async function PostPage({ params }: PostPageProps) {
               <span className="bg-primary-100 text-primary-700 rounded-full px-3 py-1 font-medium">
                 {post.category?.title || "Article"}
               </span>
+              {post.publishedAt && (
+                <span className="flex items-center">
+                  <Calendar className="ml-1 h-4 w-4" />
+                  نُشر: {new Date(post.publishedAt).toLocaleDateString("ar-SA")}
+                </span>
+              )}
+              {post.lastReviewedAt && (
+                <span className="flex items-center text-emerald-700">
+                  <RotateCw className="ml-1 h-4 w-4" />
+                  آخر مراجعة:{" "}
+                  {new Date(post.lastReviewedAt).toLocaleDateString("ar-SA")}
+                </span>
+              )}
               <span className="flex items-center">
-                <Calendar className="mr-1 h-4 w-4" />
-                {new Date(post.publishedAt).toLocaleDateString()}
-              </span>
-              <span className="flex items-center">
-                <Clock className="mr-1 h-4 w-4" />
-                {post.readTime} min read
+                <Clock className="ml-1 h-4 w-4" />
+                {readTime} دقيقة قراءة
               </span>
             </div>
 
@@ -177,18 +303,53 @@ export default async function PostPage({ params }: PostPageProps) {
               {post.title}
             </h1>
 
-            <div className="flex items-center">
-              <div className="bg-primary-100 text-primary-700 mr-4 flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold">
-                {post.authorName?.[0]}
+            {authorDisplayName && (
+              <div className="flex items-center">
+                {post.author?.photo ? (
+                  <Img
+                    src={post.author.photo}
+                    alt={authorDisplayName}
+                    fill={false}
+                    width={48}
+                    height={48}
+                    className="ml-4 h-12 w-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-primary-100 text-primary-700 ml-4 flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold">
+                    {authorDisplayName?.[0]}
+                  </div>
+                )}
+                <div>
+                  <p className="font-medium text-gray-900">{authorDisplayName}</p>
+                  <p className="text-sm text-gray-500">{authorDisplayRole}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-gray-900">{post.authorName}</p>
-                <p className="text-sm text-gray-500">{post.authorRole}</p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
+
+      {post.featuredAnswer && (
+        <section className="container mx-auto px-4 pt-8">
+          <div className="mx-auto max-w-4xl">
+            <aside
+              className="rounded-xl border-r-4 border-indigo-500 bg-indigo-50 p-6"
+              role="note"
+              aria-label="إجابة سريعة"
+            >
+              <div className="mb-2 flex items-center gap-2">
+                <Lightbulb className="h-5 w-5 text-indigo-700" />
+                <span className="text-sm font-bold text-indigo-700">
+                  الإجابة باختصار
+                </span>
+              </div>
+              <p className="text-lg leading-relaxed text-indigo-950">
+                {post.featuredAnswer}
+              </p>
+            </aside>
+          </div>
+        </section>
+      )}
 
       {/* Main Image */}
       {post.mainImage && (
@@ -200,7 +361,9 @@ export default async function PostPage({ params }: PostPageProps) {
               fill
               containerClassName="relative -mt-8 aspect-video w-full overflow-hidden rounded-2xl shadow-xl md:-mt-12"
               className="object-cover"
-              priority
+              fetchPriority="high"
+              loading="eager"
+              sizes="(max-width: 1024px) 100vw, 1024px"
             />
           </div>
         </div>
@@ -213,15 +376,84 @@ export default async function PostPage({ params }: PostPageProps) {
             <div className="col-span-1 lg:col-span-2">
               <Card>
                 <CardContent>
+                  {headings.length > 0 && (
+                    <nav
+                      aria-label="جدول المحتويات"
+                      className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-5"
+                    >
+                      <p className="mb-3 text-sm font-bold text-gray-900">
+                        محتويات المقال
+                      </p>
+                      <ol className="list-decimal space-y-1 pr-5 text-sm text-indigo-700">
+                        {headings.map((h) => (
+                          <li
+                            key={h.id}
+                            className={h.level === 3 ? "mr-4" : ""}
+                          >
+                            <a
+                              href={`#${h.id}`}
+                              className="hover:underline"
+                            >
+                              {h.text}
+                            </a>
+                          </li>
+                        ))}
+                      </ol>
+                    </nav>
+                  )}
+
+                  {post.articleType === "HowTo" &&
+                    post.howToSteps &&
+                    post.howToSteps.length > 0 && (
+                      <HowToStepsBlock steps={post.howToSteps} />
+                    )}
+
                   <PortableText
                     value={post.body}
                     components={{
                       block: {
-                        h2: ({ children }) => (
-                          <h2 className="mb-8 rounded-lg border-r-4 border-indigo-600 bg-indigo-50 p-6 text-2xl font-bold">
-                            {children}
-                          </h2>
-                        ),
+                        h2: ({ children, value }) => {
+                          const text = Array.isArray(value?.children)
+                            ? value.children
+                                .map((c) =>
+                                  "text" in c && typeof c.text === "string"
+                                    ? c.text
+                                    : "",
+                                )
+                                .join("")
+                                .trim()
+                            : "";
+                          const id = text ? slugifyHeading(text) : undefined;
+                          return (
+                            <h2
+                              id={id}
+                              className="mb-8 rounded-lg border-r-4 border-indigo-600 bg-indigo-50 p-6 text-2xl font-bold scroll-mt-24"
+                            >
+                              {children}
+                            </h2>
+                          );
+                        },
+                        h3: ({ children, value }) => {
+                          const text = Array.isArray(value?.children)
+                            ? value.children
+                                .map((c) =>
+                                  "text" in c && typeof c.text === "string"
+                                    ? c.text
+                                    : "",
+                                )
+                                .join("")
+                                .trim()
+                            : "";
+                          const id = text ? slugifyHeading(text) : undefined;
+                          return (
+                            <h3
+                              id={id}
+                              className="mb-4 mt-8 text-xl font-bold text-gray-900 scroll-mt-24"
+                            >
+                              {children}
+                            </h3>
+                          );
+                        },
                       },
                       types: {
                         image: ({ value }) => {
@@ -235,12 +467,26 @@ export default async function PostPage({ params }: PostPageProps) {
                               fill
                               containerClassName="relative my-8 aspect-video w-full overflow-hidden rounded-xl"
                               className="object-cover"
+                              sizes="(max-width: 1024px) 100vw, 720px"
                             />
                           );
                         },
+                        infoCallout: InfoCalloutBlock,
+                        comparisonTable: ComparisonTableBlock,
+                        internalServiceLink: InternalServiceLinkBlock,
+                        embeddedFaq: EmbeddedFaqBlock,
                       },
                     }}
                   />
+
+                  {post.postFaqs && post.postFaqs.length > 0 && (
+                    <EmbeddedFaqBlock
+                      value={{
+                        heading: "الأسئلة الشائعة",
+                        items: post.postFaqs,
+                      }}
+                    />
+                  )}
 
                   {/* Keywords Section */}
                   {post.keywords && post.keywords.length > 0 && (
@@ -271,19 +517,47 @@ export default async function PostPage({ params }: PostPageProps) {
                 <Card>
                   <CardContent className="p-6">
                     <div className="text-center">
-                      <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-indigo-100">
-                        <User className="h-10 w-10 text-indigo-600" />
-                      </div>
-                      <h3 className="mb-2 text-lg">{post.authorName}</h3>
+                      {post.author?.photo ? (
+                        <Img
+                          src={post.author.photo}
+                          alt={authorDisplayName || ""}
+                          fill={false}
+                          width={80}
+                          height={80}
+                          className="mx-auto mb-4 h-20 w-20 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-indigo-100">
+                          <User className="h-10 w-10 text-indigo-600" />
+                        </div>
+                      )}
+                      <h3 className="mb-2 text-lg">{authorDisplayName}</h3>
                       <p className="mb-4 text-sm text-gray-600">
-                        {post.authorRole}
+                        {authorDisplayRole}
                       </p>
-                      {/* <Separator className="my-4" /> */}
                       <hr />
-                      <p className="text-sm leading-relaxed text-gray-600">
-                        فريق متخصص من الخبراء في مجال الخدمات المنزلية، نقدم لكم
-                        أفضل النصائح والإرشادات المتخصصة.
+                      <p className="mt-4 text-sm leading-relaxed text-gray-600">
+                        {post.author?.bio ||
+                          "فريق متخصص من الخبراء في مجال الخدمات المنزلية، نقدم لكم أفضل النصائح والإرشادات المتخصصة."}
                       </p>
+                      {post.author?.expertise &&
+                        post.author.expertise.length > 0 && (
+                          <div className="mt-4 flex flex-wrap justify-center gap-1">
+                            {post.author.expertise.map((tag) => (
+                              <span
+                                key={tag}
+                                className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs text-indigo-700"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      {post.author?.yearsExperience ? (
+                        <p className="mt-3 text-xs text-gray-500">
+                          {post.author.yearsExperience}+ سنوات خبرة
+                        </p>
+                      ) : null}
                     </div>
                   </CardContent>
                 </Card>
