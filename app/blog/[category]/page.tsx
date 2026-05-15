@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import { Img } from "../../../components/Image";
 import {
   Calendar,
@@ -12,7 +13,9 @@ import { client } from "../../../sanity/client";
 import {
   POSTS_BY_CATEGORY_QUERY,
   CATEGORIES_QUERY,
+  CATEGORY_QUERY,
 } from "../../../sanity/lib/queries";
+import { absoluteUrl } from "@/app/lib/business";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -22,6 +25,8 @@ interface Category {
   _id: string;
   title: string;
   slug: { current: string };
+  description?: string;
+  seoTitle?: string;
 }
 
 interface SanityImage {
@@ -47,6 +52,40 @@ interface Post {
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: CategoryPageProps): Promise<Metadata> {
+  const { category } = await params;
+  const decodedCategorySlug = decodeURIComponent(category);
+  const cat = await client.fetch<Category | null>(CATEGORY_QUERY, {
+    slug: decodedCategorySlug,
+  });
+  if (!cat) return {};
+
+  const title = cat.seoTitle || `${cat.title} | المدونة`;
+  const description =
+    cat.description ||
+    `أحدث المقالات في قسم ${cat.title} — نصائح وإرشادات من خبراء الخدمات.`;
+  const canonical = absoluteUrl(`/blog/${decodedCategorySlug}`);
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+      languages: { "ar-SA": canonical, "x-default": canonical },
+    },
+    openGraph: {
+      type: "website",
+      locale: "ar_SA",
+      url: canonical,
+      title,
+      description,
+    },
+    twitter: { card: "summary_large_image", title, description },
+  };
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {

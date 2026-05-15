@@ -20,6 +20,7 @@ import FaqJsonLd from "@/app/_components/FaqJsonLd";
 import BreadcrumbJsonLd from "@/app/_components/BreadcrumbJsonLd";
 import FaqSection from "./FaqSection";
 import CtaSection from "./CtaSection";
+import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
 import { themes } from "./theme";
 import { cities } from "@/app/lib/locations";
 import type { Service } from "@/app/lib/services";
@@ -28,10 +29,12 @@ import { business, telLink } from "@/app/lib/business";
 
 interface ServiceHubTemplateProps {
   service: Service;
+  relatedPosts?: RelatedPost[];
 }
 
 export default function ServiceHubTemplate({
   service,
+  relatedPosts,
 }: ServiceHubTemplateProps) {
   const t = themes[service.colorTheme];
   const pageUrl = `/${service.hubSlug}`;
@@ -221,6 +224,14 @@ export default function ServiceHubTemplate({
         title={`الأسئلة الشائعة عن ${service.titleAr}`}
         items={service.hubFaqs}
       />
+
+      {relatedPosts && relatedPosts.length > 0 && (
+        <RelatedPostsSection
+          posts={relatedPosts}
+          title={`مقالات في ${service.titleAr}`}
+          subtitle="نصائح وإرشادات يجب أن تعرفها قبل طلب الخدمة"
+        />
+      )}
 
       <CtaSection
         title={`اطلب ${service.titleAr} الآن`}

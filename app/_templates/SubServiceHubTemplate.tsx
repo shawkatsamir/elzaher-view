@@ -10,6 +10,7 @@ import FaqJsonLd from "@/app/_components/FaqJsonLd";
 import BreadcrumbJsonLd from "@/app/_components/BreadcrumbJsonLd";
 import FaqSection from "./FaqSection";
 import CtaSection from "./CtaSection";
+import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
 import { themes } from "./theme";
 import { cities } from "@/app/lib/locations";
 import type { Service, SubService } from "@/app/lib/services";
@@ -19,11 +20,13 @@ import { telLink } from "@/app/lib/business";
 interface SubServiceHubTemplateProps {
   service: Service;
   subService: SubService;
+  relatedPosts?: RelatedPost[];
 }
 
 export default function SubServiceHubTemplate({
   service,
   subService,
+  relatedPosts,
 }: SubServiceHubTemplateProps) {
   const t = themes[service.colorTheme];
   const pageUrl = `/${subService.slug}`;
@@ -144,6 +147,14 @@ export default function SubServiceHubTemplate({
         title={`الأسئلة الشائعة حول ${subService.titleAr}`}
         items={subService.faqs}
       />
+
+      {relatedPosts && relatedPosts.length > 0 && (
+        <RelatedPostsSection
+          posts={relatedPosts}
+          title={`مقالات في ${subService.titleAr}`}
+          subtitle="إرشادات الخبراء"
+        />
+      )}
 
       <CtaSection
         title={`اطلب ${subService.titleAr} الآن`}

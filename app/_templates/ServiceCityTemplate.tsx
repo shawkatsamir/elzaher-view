@@ -11,6 +11,7 @@ import FaqJsonLd from "@/app/_components/FaqJsonLd";
 import BreadcrumbJsonLd from "@/app/_components/BreadcrumbJsonLd";
 import FaqSection from "./FaqSection";
 import CtaSection from "./CtaSection";
+import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
 import { themes } from "./theme";
 import {
   cities,
@@ -28,6 +29,7 @@ import { business, telLink } from "@/app/lib/business";
 interface ServiceCityTemplateProps {
   service: Service;
   city: City;
+  relatedPosts?: RelatedPost[];
 }
 
 function buildCityFaqs(service: Service, city: City): FaqItem[] {
@@ -47,6 +49,7 @@ function buildCityFaqs(service: Service, city: City): FaqItem[] {
 export default function ServiceCityTemplate({
   service,
   city,
+  relatedPosts,
 }: ServiceCityTemplateProps) {
   const t = themes[service.colorTheme];
   const slug = buildServiceCitySlug(service, city);
@@ -241,6 +244,14 @@ export default function ServiceCityTemplate({
             </div>
           </div>
         </section>
+      )}
+
+      {relatedPosts && relatedPosts.length > 0 && (
+        <RelatedPostsSection
+          posts={relatedPosts}
+          title={`مقالات عن ${service.titleAr} في ${city.nameAr}`}
+          subtitle="إرشادات الخبراء قبل وأثناء طلب الخدمة"
+        />
       )}
 
       {/* Other services in same city */}

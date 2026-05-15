@@ -6,6 +6,7 @@ import { cities } from "@/app/lib/locations";
 import {
   buildServiceCitySlug,
   buildSubServiceCitySlug,
+  SITEMAP_PAGE_SLUG,
 } from "@/app/lib/slug-registry";
 
 interface SanityPost {
@@ -35,6 +36,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/${SITEMAP_PAGE_SLUG}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.4,
     },
   ];
 

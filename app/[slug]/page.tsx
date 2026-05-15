@@ -10,6 +10,13 @@ import ServiceHubTemplate from "@/app/_templates/ServiceHubTemplate";
 import ServiceCityTemplate from "@/app/_templates/ServiceCityTemplate";
 import SubServiceHubTemplate from "@/app/_templates/SubServiceHubTemplate";
 import SubServiceCityTemplate from "@/app/_templates/SubServiceCityTemplate";
+import SitemapPageTemplate from "@/app/_templates/SitemapPageTemplate";
+import type { RelatedPost } from "@/app/_templates/RelatedPostsSection";
+import { client } from "@/sanity/client";
+import {
+  RELATED_POSTS_BY_SERVICE_QUERY,
+  RELATED_POSTS_BY_SERVICE_AND_CITY_QUERY,
+} from "@/sanity/lib/queries";
 
 export const dynamicParams = false;
 
@@ -81,6 +88,15 @@ function descriptorMeta(d: PageDescriptor): {
         canonicalPath: `/${d.slug}`,
       };
     }
+    case "site-map": {
+      return {
+        title: `خريطة الموقع | ${business.nameAr}`,
+        description: `جميع صفحات موقع ${business.nameAr} — خدمات وتخصصات في كل مدن المملكة.`,
+        keywords: ["خريطة الموقع", business.nameAr, "جميع الخدمات"],
+        image: business.defaultLogoPath,
+        canonicalPath: `/${d.slug}`,
+      };
+    }
   }
 }
 
@@ -125,6 +141,26 @@ export async function generateMetadata({
   };
 }
 
+async function fetchRelatedPosts(
+  serviceSlug: string,
+  citySlug?: string,
+): Promise<RelatedPost[]> {
+  try {
+    if (citySlug) {
+      const cityScoped = await client.fetch<RelatedPost[]>(
+        RELATED_POSTS_BY_SERVICE_AND_CITY_QUERY,
+        { serviceSlug, citySlug },
+      );
+      if (cityScoped && cityScoped.length > 0) return cityScoped;
+    }
+    return await client.fetch<RelatedPost[]>(RELATED_POSTS_BY_SERVICE_QUERY, {
+      serviceSlug,
+    });
+  } catch {
+    return [];
+  }
+}
+
 export default async function DynamicSlugPage({
   params,
 }: {
@@ -135,29 +171,53 @@ export default async function DynamicSlugPage({
   if (!descriptor) notFound();
 
   switch (descriptor.kind) {
-    case "service-hub":
-      return <ServiceHubTemplate service={descriptor.service} />;
-    case "service-city":
+    case "service-hub": {
+      const relatedPosts = await fetchRelatedPosts(descriptor.service.slug);
+      return (
+        <ServiceHubTemplate
+          service={descriptor.service}
+          relatedPosts={relatedPosts}
+        />
+      );
+    }
+    case "service-city": {
+      const relatedPosts = await fetchRelatedPosts(
+        descriptor.service.slug,
+        descriptor.city.slug,
+      );
       return (
         <ServiceCityTemplate
           service={descriptor.service}
           city={descriptor.city}
+          relatedPosts={relatedPosts}
         />
       );
-    case "sub-service-hub":
+    }
+    case "sub-service-hub": {
+      const relatedPosts = await fetchRelatedPosts(descriptor.service.slug);
       return (
         <SubServiceHubTemplate
           service={descriptor.service}
           subService={descriptor.subService}
+          relatedPosts={relatedPosts}
         />
       );
-    case "sub-service-city":
+    }
+    case "sub-service-city": {
+      const relatedPosts = await fetchRelatedPosts(
+        descriptor.service.slug,
+        descriptor.city.slug,
+      );
       return (
         <SubServiceCityTemplate
           service={descriptor.service}
           subService={descriptor.subService}
           city={descriptor.city}
+          relatedPosts={relatedPosts}
         />
       );
+    }
+    case "site-map":
+      return <SitemapPageTemplate />;
   }
 }

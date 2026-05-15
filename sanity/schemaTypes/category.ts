@@ -24,7 +24,17 @@ export default defineType({
     defineField({
       name: "description",
       title: "Description",
+      description:
+        "Used as the SEO meta description on the category index page.",
       type: "text",
+      rows: 3,
+    }),
+    defineField({
+      name: "seoTitle",
+      title: "SEO Title",
+      description:
+        "Optional. Overrides the category title in the <title> tag. Useful for longer keyword-rich titles.",
+      type: "string",
     }),
   ],
 });
