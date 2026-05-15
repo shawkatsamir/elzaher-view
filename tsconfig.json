@@ -34,7 +34,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "tailwind.config.js",
-    "app/sitemap.js",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [

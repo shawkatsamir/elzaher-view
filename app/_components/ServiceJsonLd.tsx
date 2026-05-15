@@ -1,8 +1,11 @@
+import { business, absoluteUrl } from "@/app/lib/business";
+
 interface ServiceJsonLdProps {
   name: string;
   description: string;
   image: string;
   url: string;
+  areaServedAr?: string;
   offers?: {
     price?: string;
     priceCurrency?: string;
@@ -14,37 +17,33 @@ export default function ServiceJsonLd({
   description,
   image,
   url,
+  areaServedAr,
   offers,
 }: ServiceJsonLdProps) {
-  const baseUrl = "https://alzaherview.com";
-  const fullUrl = `${baseUrl}${url}`;
-  const imageUrl = image.startsWith("http") ? image : `${baseUrl}${image}`;
-
   const schema = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: name,
-    description: description,
+    name,
+    description,
     provider: {
       "@type": "LocalBusiness",
-      name: "شركة الزاهر فيو",
-      image: `${baseUrl}/logo.png`,
-      telephone: "+966590123782",
+      name: business.nameAr,
+      image: absoluteUrl(business.defaultLogoPath),
+      telephone: business.phone,
       address: {
         "@type": "PostalAddress",
-        streetAddress: "King Fahd Road",
-        addressLocality: "Riyadh",
-        addressRegion: "Riyadh",
-        postalCode: "11564",
-        addressCountry: "SA",
+        streetAddress: business.address.streetEn,
+        addressLocality: business.address.cityEn,
+        addressRegion: business.address.regionEn,
+        postalCode: business.address.postalCode,
+        addressCountry: business.address.country,
       },
     },
-    areaServed: {
-      "@type": "Country",
-      name: "Saudi Arabia",
-    },
-    url: fullUrl,
-    image: imageUrl,
+    areaServed: areaServedAr
+      ? { "@type": "City", name: areaServedAr }
+      : { "@type": "Country", name: "Saudi Arabia" },
+    url: absoluteUrl(url),
+    image: absoluteUrl(image),
     ...(offers && {
       offers: offers.map((offer) => ({
         "@type": "Offer",
