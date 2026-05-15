@@ -80,8 +80,9 @@ export function ImageCarousel({
             src={imagePath}
             alt={currentSlide?.title || ""}
             className="transition-transform duration-500"
-            priority={currentIndex === 0}
-            fetchPriority="high"
+            fetchPriority={currentIndex === 0 ? "high" : "auto"}
+            loading={currentIndex === 0 ? "eager" : "lazy"}
+            sizes="100vw"
           />
         </div>
 

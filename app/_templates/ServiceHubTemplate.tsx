@@ -5,15 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { SubServiceCard } from "@/components/SubServiceCard";
 import { ImageCarousel } from "@/components/ImageCarousel";
-import {
-  Shield,
-  Clock,
-  Users,
-  Award,
-  CheckCircle,
-  MapPin,
-  Phone,
-} from "lucide-react";
+import { Shield, Clock, Users, Award, MapPin, Phone } from "lucide-react";
 import ServiceJsonLd from "@/app/_components/ServiceJsonLd";
 import LocalBusinessJsonLd from "@/app/_components/LocalBusinessJsonLd";
 import FaqJsonLd from "@/app/_components/FaqJsonLd";
@@ -100,6 +92,9 @@ export default function ServiceHubTemplate({
                   src={service.galleryImages[0]?.src ?? ""}
                   alt={service.titleAr}
                   className="h-[400px] w-full object-cover"
+                  fetchPriority="high"
+                  loading="eager"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
             </div>

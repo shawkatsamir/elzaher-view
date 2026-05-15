@@ -34,7 +34,7 @@ function descriptorMeta(d: PageDescriptor): {
   switch (d.kind) {
     case "service-hub": {
       return {
-        title: `${d.service.hubTitleAr} | ${business.nameAr}`,
+        title: d.service.hubTitleAr,
         description: d.service.shortDescriptionAr,
         keywords: [
           d.service.hubTitleAr,
@@ -48,7 +48,7 @@ function descriptorMeta(d: PageDescriptor): {
     }
     case "service-city": {
       return {
-        title: `${d.service.titleAr} ${d.city.nameAr} | ${d.service.hubTitleAr} في ${d.city.nameAr}`,
+        title: `${d.service.hubTitleAr} في ${d.city.nameAr} | ${d.service.titleAr} ${d.city.nameAr}`,
         description: `أفضل ${d.service.titleAr} في ${d.city.nameAr}. ${d.service.shortDescriptionAr} خدمة 24/7 في ${d.city.nameAr} وضواحيها.`,
         keywords: [
           `${d.service.titleAr} ${d.city.nameAr}`,
@@ -63,7 +63,7 @@ function descriptorMeta(d: PageDescriptor): {
     }
     case "sub-service-hub": {
       return {
-        title: `${d.subService.titleAr} | ${d.service.hubTitleAr}`,
+        title: `${d.subService.titleAr} - ${d.service.hubTitleAr}`,
         description: d.subService.shortAr,
         keywords: [
           d.subService.titleAr,
@@ -76,7 +76,7 @@ function descriptorMeta(d: PageDescriptor): {
     }
     case "sub-service-city": {
       return {
-        title: `${d.subService.titleAr} ${d.city.nameAr} | ${d.service.hubTitleAr}`,
+        title: `${d.subService.titleAr} في ${d.city.nameAr} - ${d.service.hubTitleAr}`,
         description: `${d.subService.shortAr} في ${d.city.nameAr}. خدمة محلية متخصصة وفريق متاح على مدار الساعة.`,
         keywords: [
           `${d.subService.titleAr} ${d.city.nameAr}`,
@@ -90,7 +90,7 @@ function descriptorMeta(d: PageDescriptor): {
     }
     case "site-map": {
       return {
-        title: `خريطة الموقع | ${business.nameAr}`,
+        title: `خريطة الموقع`,
         description: `جميع صفحات موقع ${business.nameAr} — خدمات وتخصصات في كل مدن المملكة.`,
         keywords: ["خريطة الموقع", business.nameAr, "جميع الخدمات"],
         image: business.defaultLogoPath,

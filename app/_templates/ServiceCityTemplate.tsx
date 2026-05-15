@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { SubServiceCard } from "@/components/SubServiceCard";
-import { CheckCircle, MapPin, Phone, Shield, Clock } from "lucide-react";
+import { CheckCircle, MapPin, Phone } from "lucide-react";
 import ServiceJsonLd from "@/app/_components/ServiceJsonLd";
 import LocalBusinessJsonLd from "@/app/_components/LocalBusinessJsonLd";
 import FaqJsonLd from "@/app/_components/FaqJsonLd";
@@ -13,11 +13,7 @@ import FaqSection from "./FaqSection";
 import CtaSection from "./CtaSection";
 import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
 import { themes } from "./theme";
-import {
-  cities,
-  getNearbyCities,
-  type City,
-} from "@/app/lib/locations";
+import { getNearbyCities, type City } from "@/app/lib/locations";
 import type { Service, FaqItem } from "@/app/lib/services";
 import {
   buildServiceCitySlug,
@@ -124,6 +120,9 @@ export default function ServiceCityTemplate({
                   src={service.galleryImages[0]?.src ?? ""}
                   alt={`${service.titleAr} في ${city.nameAr}`}
                   className="h-[400px] w-full object-cover"
+                  fetchPriority="high"
+                  loading="eager"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
             </div>
