@@ -10,7 +10,8 @@ export type PageKind =
   | "service-hub"
   | "service-city"
   | "sub-service-hub"
-  | "sub-service-city";
+  | "sub-service-city"
+  | "site-map";
 
 export interface ServiceHubDescriptor {
   kind: "service-hub";
@@ -40,11 +41,19 @@ export interface SubServiceCityDescriptor {
   city: City;
 }
 
+export interface SiteMapDescriptor {
+  kind: "site-map";
+  slug: string;
+}
+
+export const SITEMAP_PAGE_SLUG = "خريطة-الموقع";
+
 export type PageDescriptor =
   | ServiceHubDescriptor
   | ServiceCityDescriptor
   | SubServiceHubDescriptor
-  | SubServiceCityDescriptor;
+  | SubServiceCityDescriptor
+  | SiteMapDescriptor;
 
 // Arabic city names may contain spaces (e.g. "مكة المكرمة"). URL slugs use hyphens.
 function arabicCitySlug(city: City): string {
@@ -64,6 +73,9 @@ export function buildSubServiceCitySlug(
 
 const registry: Map<string, PageDescriptor> = (() => {
   const map = new Map<string, PageDescriptor>();
+
+  // Special: HTML sitemap page
+  map.set(SITEMAP_PAGE_SLUG, { kind: "site-map", slug: SITEMAP_PAGE_SLUG });
 
   for (const service of services) {
     // Service hub

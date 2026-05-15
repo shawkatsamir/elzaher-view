@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { client } from "../../../../sanity/client";
 import { POST_QUERY, POSTS_QUERY } from "../../../../sanity/lib/queries";
+import { urlFor } from "@/sanity/lib/image";
+import { absoluteUrl } from "@/app/lib/business";
 
 import { PortableText } from "@portabletext/react";
 import { Img } from "../../../../components/Image";
@@ -57,8 +60,10 @@ interface RelatedPost {
 interface Post {
   _id: string;
   title: string;
+  seoTitle?: string;
   slug: { current: string };
   mainImage: SanityImage;
+  ogImage?: SanityImage;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: any;
   publishedAt: string;
@@ -67,6 +72,8 @@ interface Post {
   readTime: number;
   category: Category;
   relatedPosts: RelatedPost[];
+  relatedServices?: string[];
+  relatedCity?: string;
   metaDescription?: string;
   keywords?: string[];
 }
@@ -77,12 +84,61 @@ interface PostPageProps {
 
 import JsonLd from "@/app/_components/JsonLd";
 
+export async function generateMetadata({
+  params,
+}: PostPageProps): Promise<Metadata> {
+  const { category, slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
+  const post = await client.fetch<Post | null>(POST_QUERY, {
+    slug: decodedSlug,
+  });
+  if (!post) return {};
+
+  const title = post.seoTitle || post.title;
+  const description =
+    post.metaDescription ||
+    (typeof post.title === "string" ? post.title.slice(0, 160) : "");
+  const ogSource = post.ogImage || post.mainImage;
+  const ogImageUrl = ogSource
+    ? urlFor(ogSource).width(1200).height(630).fit("crop").url()
+    : undefined;
+  const canonical = absoluteUrl(
+    `/blog/${decodeURIComponent(category)}/${decodedSlug}`,
+  );
+
+  return {
+    title,
+    description,
+    keywords: post.keywords,
+    alternates: {
+      canonical,
+      languages: { "ar-SA": canonical, "x-default": canonical },
+    },
+    openGraph: {
+      type: "article",
+      locale: "ar_SA",
+      url: canonical,
+      title,
+      description,
+      publishedTime: post.publishedAt,
+      authors: post.authorName ? [post.authorName] : undefined,
+      images: ogImageUrl
+        ? [{ url: ogImageUrl, width: 1200, height: 630 }]
+        : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ogImageUrl ? [ogImageUrl] : undefined,
+    },
+  };
+}
+
 export default async function PostPage({ params }: PostPageProps) {
   const { category, slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
-  console.log("Fetching post for slug:", decodedSlug);
   const post = await client.fetch<Post>(POST_QUERY, { slug: decodedSlug });
-  console.log("Fetched post:", post ? post.title : "null");
 
   if (!post) {
     notFound();

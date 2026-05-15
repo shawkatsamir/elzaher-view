@@ -4,33 +4,36 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu, X, ChevronDown } from "lucide-react";
+import { services } from "@/app/lib/services";
+import { cities } from "@/app/lib/locations";
+import { buildServiceCitySlug } from "@/app/lib/slug-registry";
+import { business } from "@/app/lib/business";
 
 export function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [openMobilePanel, setOpenMobilePanel] = useState<
+    "services" | "cities" | null
+  >(null);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
-    setIsServicesOpen(false);
+    setOpenMobilePanel(null);
   }, [pathname]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleServices = () => setIsServicesOpen(!isServicesOpen);
-
-  const services = [
-    { name: "خدمات التنظيف", href: "/services/cleaning" },
-    { name: "خدمات الصيانة", href: "/services/maintenance" },
-    { name: "خدمات السباكة", href: "/services/plumbing" },
-    { name: "تنسيق الحدائق", href: "/services/landscaping" },
-    { name: "خدمات المقاولات", href: "/services/contracting" },
-    { name: "خدمات النقل", href: "/services/fernature" },
-    { name: "خدمات العزل", href: "/services/insulation" },
-  ];
-
   const isCurrentPage = (path: string) => pathname === path;
-  const isServicePage = pathname.startsWith("/services");
+
+  // Treat any Arabic-slug landing page (i.e. anything not under /blog, /works, /studio)
+  // as a "services" area for the active-state highlight.
+  const isServicesArea =
+    pathname !== "/" &&
+    !pathname.startsWith("/blog") &&
+    !pathname.startsWith("/works") &&
+    !pathname.startsWith("/studio");
+
+  // For the mega-menu cities column: link each city to the first (primary) service.
+  const primaryService = services[0];
 
   return (
     <header className="fixed left-0 right-0 top-0 z-50 bg-white shadow-md">
@@ -39,7 +42,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <span className="text-2xl font-bold text-blue-600">
-              شركة الزاهر فيو
+              {business.nameAr}
             </span>
           </Link>
 
@@ -57,11 +60,11 @@ export function Header() {
                 الرئيسية
               </Link>
 
-              {/* Services Dropdown */}
+              {/* Services Mega-Menu */}
               <div className="group relative">
                 <button
                   className={`flex items-center transition-colors ${
-                    isServicePage
+                    isServicesArea
                       ? "font-semibold text-blue-600"
                       : "text-gray-700 hover:text-blue-600"
                   }`}
@@ -70,17 +73,48 @@ export function Header() {
                   <ChevronDown className="mr-1 h-4 w-4" />
                 </button>
 
-                <div className="invisible absolute right-0 z-50 mt-2 w-64 rounded-lg bg-white opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100">
-                  <div className="py-2">
-                    {services.map((service, index) => (
+                <div className="invisible absolute right-0 z-50 mt-2 w-[640px] rounded-lg bg-white opacity-0 shadow-xl ring-1 ring-gray-200 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                  <div className="grid grid-cols-2 gap-2 p-4">
+                    <div>
+                      <h4 className="mb-2 border-b pb-2 text-sm font-bold text-gray-500">
+                        خدماتنا
+                      </h4>
+                      <ul className="space-y-1">
+                        {services.map((s) => (
+                          <li key={s.slug}>
+                            <Link
+                              href={`/${s.hubSlug}`}
+                              className="block rounded-md px-3 py-2 text-right text-sm text-gray-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
+                            >
+                              {s.hubTitleAr}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="mb-2 border-b pb-2 text-sm font-bold text-gray-500">
+                        {primaryService.titleAr} في المدن
+                      </h4>
+                      <ul className="grid grid-cols-2 gap-1">
+                        {cities.map((c) => (
+                          <li key={c.slug}>
+                            <Link
+                              href={`/${buildServiceCitySlug(primaryService, c)}`}
+                              className="block rounded-md px-3 py-1.5 text-right text-sm text-gray-700 transition-colors hover:bg-blue-50 hover:text-blue-700"
+                            >
+                              {c.nameAr}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                       <Link
-                        key={index}
-                        href={service.href}
-                        className="block w-full px-4 py-2 text-right text-gray-700 transition-colors hover:bg-gray-50 hover:text-blue-600"
+                        href="/خريطة-الموقع"
+                        className="mt-3 block rounded-md bg-gray-50 px-3 py-2 text-center text-xs font-medium text-blue-700 transition-colors hover:bg-blue-50"
                       >
-                        {service.name}
+                        عرض جميع الصفحات (خريطة الموقع)
                       </Link>
-                    ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -99,7 +133,7 @@ export function Header() {
               <Link
                 href="/blog"
                 className={`transition-colors ${
-                  isCurrentPage("/blog")
+                  pathname.startsWith("/blog")
                     ? "font-semibold text-blue-600"
                     : "text-gray-700 hover:text-blue-600"
                 }`}
@@ -113,6 +147,7 @@ export function Header() {
           <button
             className="rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 hover:text-blue-600 md:hidden"
             onClick={toggleMenu}
+            aria-label="القائمة"
           >
             {isMenuOpen ? (
               <X className="h-6 w-6" />
@@ -124,8 +159,8 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="border-t border-gray-200 bg-white md:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
+          <div className="max-h-[80vh] overflow-y-auto border-t border-gray-200 bg-white md:hidden">
+            <div className="space-y-1 px-2 pb-4 pt-2">
               <Link
                 href="/"
                 onClick={() => setIsMenuOpen(false)}
@@ -138,34 +173,72 @@ export function Header() {
                 الرئيسية
               </Link>
 
-              {/* Mobile Services */}
+              {/* Mobile: Services */}
               <div>
                 <button
                   className={`flex w-full items-center justify-between rounded-md px-3 py-2 transition-colors ${
-                    isServicePage
+                    isServicesArea
                       ? "bg-blue-50 font-semibold text-blue-600"
                       : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"
                   }`}
-                  onClick={toggleServices}
+                  onClick={() =>
+                    setOpenMobilePanel(
+                      openMobilePanel === "services" ? null : "services",
+                    )
+                  }
                 >
                   الخدمات
                   <ChevronDown
                     className={`h-4 w-4 transition-transform ${
-                      isServicesOpen ? "rotate-180" : ""
+                      openMobilePanel === "services" ? "rotate-180" : ""
                     }`}
                   />
                 </button>
 
-                {isServicesOpen && (
+                {openMobilePanel === "services" && (
                   <div className="mt-1 space-y-1 pr-4">
-                    {services.map((service, index) => (
+                    {services.map((s) => (
                       <Link
-                        key={index}
-                        href={service.href}
+                        key={s.slug}
+                        href={`/${s.hubSlug}`}
                         onClick={() => setIsMenuOpen(false)}
                         className="block w-full rounded-md px-3 py-2 text-right text-gray-600 transition-colors hover:bg-gray-50 hover:text-blue-600"
                       >
-                        {service.name}
+                        {s.hubTitleAr}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile: Cities */}
+              <div>
+                <button
+                  className="flex w-full items-center justify-between rounded-md px-3 py-2 text-gray-700 transition-colors hover:bg-gray-50 hover:text-blue-600"
+                  onClick={() =>
+                    setOpenMobilePanel(
+                      openMobilePanel === "cities" ? null : "cities",
+                    )
+                  }
+                >
+                  مدن الخدمة
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${
+                      openMobilePanel === "cities" ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {openMobilePanel === "cities" && (
+                  <div className="mt-1 grid grid-cols-2 gap-1 pr-4">
+                    {cities.map((c) => (
+                      <Link
+                        key={c.slug}
+                        href={`/${buildServiceCitySlug(primaryService, c)}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block rounded-md px-3 py-2 text-right text-sm text-gray-600 transition-colors hover:bg-gray-50 hover:text-blue-600"
+                      >
+                        {c.nameAr}
                       </Link>
                     ))}
                   </div>
@@ -188,12 +261,20 @@ export function Header() {
                 href="/blog"
                 onClick={() => setIsMenuOpen(false)}
                 className={`block w-full rounded-md px-3 py-2 text-right transition-colors ${
-                  isCurrentPage("/blog")
+                  pathname.startsWith("/blog")
                     ? "bg-blue-50 font-semibold text-blue-600"
                     : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"
                 }`}
               >
                 المدونة
+              </Link>
+
+              <Link
+                href="/خريطة-الموقع"
+                onClick={() => setIsMenuOpen(false)}
+                className="block w-full rounded-md px-3 py-2 text-right text-gray-600 transition-colors hover:bg-gray-50 hover:text-blue-600"
+              >
+                خريطة الموقع
               </Link>
             </div>
           </div>

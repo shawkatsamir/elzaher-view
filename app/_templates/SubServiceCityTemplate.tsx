@@ -10,6 +10,7 @@ import FaqJsonLd from "@/app/_components/FaqJsonLd";
 import BreadcrumbJsonLd from "@/app/_components/BreadcrumbJsonLd";
 import FaqSection from "./FaqSection";
 import CtaSection from "./CtaSection";
+import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
 import { themes } from "./theme";
 import { getNearbyCities, type City } from "@/app/lib/locations";
 import type { Service, SubService, FaqItem } from "@/app/lib/services";
@@ -23,6 +24,7 @@ interface SubServiceCityTemplateProps {
   service: Service;
   subService: SubService;
   city: City;
+  relatedPosts?: RelatedPost[];
 }
 
 function buildSubServiceCityFaqs(
@@ -42,6 +44,7 @@ export default function SubServiceCityTemplate({
   service,
   subService,
   city,
+  relatedPosts,
 }: SubServiceCityTemplateProps) {
   const t = themes[service.colorTheme];
   const slug = buildSubServiceCitySlug(subService, city);
@@ -199,6 +202,14 @@ export default function SubServiceCityTemplate({
           </div>
         </div>
       </section>
+
+      {relatedPosts && relatedPosts.length > 0 && (
+        <RelatedPostsSection
+          posts={relatedPosts}
+          title={`مقالات عن ${subService.titleAr} في ${city.nameAr}`}
+          subtitle="نصائح يجب معرفتها"
+        />
+      )}
 
       {/* Nearby cities for same sub-service */}
       {nearbyCities.length > 0 && (

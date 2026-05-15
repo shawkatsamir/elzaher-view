@@ -5,43 +5,32 @@ import {
   LuFacebook,
   LuTwitter,
   LuInstagram,
-  LuLinkedin,
 } from "react-icons/lu";
 import Link from "next/link";
+import { services } from "@/app/lib/services";
+import { cities } from "@/app/lib/locations";
+import { buildServiceCitySlug } from "@/app/lib/slug-registry";
+import { business, telLink } from "@/app/lib/business";
+
+const addressLine = `${business.address.streetAr}، ${business.address.cityAr}، ${business.address.regionAr}`;
 
 export function Footer() {
-  const services = [
-    { name: "خدمات التنظيف", href: "/services/cleaning" },
-    { name: "خدمات الصيانة", href: "/services/maintenance" },
-    { name: "خدمات السباكة", href: "/services/plumbing" },
-    { name: "تنسيق الحدائق", href: "/services/landscaping" },
-    { name: "خدمات المقاولات", href: "/services/contracting" },
-    { name: "خدمات النقل", href: "/services/moving" },
-    { name: "خدمات العزل", href: "/services/insulation" },
-  ];
-
   const socialMedia = [
-    {
-      name: "فيسبوك",
-      href: "https://facebook.com",
-      icon: <LuFacebook />,
-      classsName: "text-gray-400 hover:text-blue-400 transition-colors",
-    },
-    {
-      name: "تويتر",
-      href: "https://twitter.com",
-      icon: <LuTwitter />,
-      className: "",
-    },
-    { name: "إنستغرام", href: "https://instagram.com", icon: <LuInstagram /> },
-    { name: "لينكدإن", href: "https://linkedin.com", icon: <LuLinkedin /> },
-  ];
+    { name: "فيسبوك", href: business.social.facebook, icon: <LuFacebook /> },
+    { name: "تويتر", href: business.social.twitter, icon: <LuTwitter /> },
+    { name: "إنستغرام", href: business.social.instagram, icon: <LuInstagram /> },
+  ].filter((s) => Boolean(s.href));
 
   const quickLinks = [
     { name: "الرئيسية", href: "/" },
     { name: "اعمالنا", href: "/works" },
     { name: "المدونة", href: "/blog" },
+    { name: "خريطة الموقع", href: "/خريطة-الموقع" },
   ];
+
+  // For the cities column, link each city to the first (primary) service's city page —
+  // this gives Google a city anchor and lets the user pick their service from there.
+  const primaryService = services[0];
 
   return (
     <footer className="bg-gray-900">
@@ -49,18 +38,19 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
             <h3 className="text-2xl font-bold text-blue-400">
-              شركة الزاهر فيو
+              {business.nameAr}
             </h3>
             <p className="leading-relaxed text-gray-300">
-              نقدم أفضل الخدمات المنزلية بجودة عالية و مهنية متميزة. فريفنا
-              المتخصص جاهز لخدمتكم علي مدار الساعة
+              نقدم أفضل الخدمات المنزلية بجودة عالية ومهنية متميزة. فريقنا
+              المتخصص جاهز لخدمتكم على مدار الساعة في جميع مدن المملكة.
             </p>
 
             <div className="flex space-x-4 space-x-reverse">
-              {socialMedia.map((item, index) => (
+              {socialMedia.map((item) => (
                 <Link
-                  key={index}
-                  href={item.href}
+                  key={item.name}
+                  href={item.href!}
+                  aria-label={item.name}
                   className="text-gray-400 transition-colors hover:text-blue-400"
                 >
                   {item.icon}
@@ -70,15 +60,15 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-blue-400">روابط سريعة</h4>
+            <h4 className="text-lg font-semibold text-blue-400">خدماتنا</h4>
             <ul className="space-y-2">
-              {quickLinks.map((link, index) => (
-                <li key={index}>
+              {services.map((service) => (
+                <li key={service.slug}>
                   <Link
-                    href={link.href}
+                    href={`/${service.hubSlug}`}
                     className="text-right text-gray-300 transition-colors hover:text-white"
                   >
-                    {link.name}
+                    {service.hubTitleAr}
                   </Link>
                 </li>
               ))}
@@ -86,20 +76,20 @@ export function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-blue-400">خدماتنا</h4>
-            <ul className="space-y-2">
-              {services.map((service, index) =>
-                service.href ? (
-                  <li key={index}>
-                    <Link
-                      href={service.href}
-                      className="text-right text-gray-300 transition-colors hover:text-white"
-                    >
-                      {service.name}
-                    </Link>
-                  </li>
-                ) : null,
-              )}
+            <h4 className="text-lg font-semibold text-blue-400">
+              {primaryService.titleAr} في مدن المملكة
+            </h4>
+            <ul className="grid grid-cols-2 gap-2">
+              {cities.map((city) => (
+                <li key={city.slug}>
+                  <Link
+                    href={`/${buildServiceCitySlug(primaryService, city)}`}
+                    className="text-right text-sm text-gray-300 transition-colors hover:text-white"
+                  >
+                    {primaryService.citySlugPrefix} {city.nameAr}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -108,22 +98,50 @@ export function Footer() {
               معلومات التواصل
             </h4>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3 space-x-reverse">
+              <Link
+                href={telLink()}
+                className="flex items-center space-x-3 space-x-reverse text-gray-300 hover:text-white"
+              >
                 <LuPhone className="h-5 w-5 flex-shrink-0 text-blue-400" />
-                <span className="text-gray-300">+966590123782</span>
-              </div>
-              <div className="flex items-center space-x-3 space-x-reverse">
+                <span>{business.phoneDisplay}</span>
+              </Link>
+              <Link
+                href={`mailto:${business.email}`}
+                className="flex items-center space-x-3 space-x-reverse text-gray-300 hover:text-white"
+              >
                 <LuMail className="h-5 w-5 flex-shrink-0 text-blue-400" />
-                <span className="text-gray-300">info@alzaherview.com</span>
-              </div>
+                <span>{business.email}</span>
+              </Link>
               <div className="flex items-start space-x-3 space-x-reverse">
                 <LuMapPin className="mt-1 h-5 w-5 flex-shrink-0 text-blue-400" />
-                <span className="text-gray-300">
-                  الرياض، المملكة العربية السعودية
-                </span>
+                <span className="text-gray-300">{addressLine}</span>
               </div>
             </div>
+
+            <div className="pt-4">
+              <h5 className="mb-2 text-sm font-semibold text-blue-400">
+                روابط سريعة
+              </h5>
+              <ul className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
+                {quickLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-gray-300 transition-colors hover:text-white"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
+        </div>
+
+        <div className="mt-10 border-t border-gray-800 pt-8">
+          <p className="text-center text-sm text-gray-400">
+            © {new Date().getFullYear()} {business.nameAr}. جميع الحقوق محفوظة.
+          </p>
         </div>
       </div>
     </footer>
