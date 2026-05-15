@@ -1,23 +1,56 @@
 import { business, absoluteUrl } from "@/app/lib/business";
+import type { City } from "@/app/lib/locations";
 
-export default function OrganizationJsonLd() {
+interface LocalBusinessJsonLdProps {
+  city?: City;
+  pageUrl: string;
+  description?: string;
+}
+
+export default function LocalBusinessJsonLd({
+  city,
+  pageUrl,
+  description,
+}: LocalBusinessJsonLdProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
     name: business.nameAr,
     alternateName: business.nameEn,
-    url: business.baseUrl,
+    url: absoluteUrl(pageUrl),
     logo: absoluteUrl(business.defaultLogoPath),
+    image: absoluteUrl(business.defaultLogoPath),
     description:
-      "نقدم خدمات منزلية شاملة في جميع مدن المملكة العربية السعودية بأعلى جودة وأفضل الأسعار: سباكة، تنظيف، صيانة، عزل، تنسيق حدائق، نقل عفش، ومقاولات عامة.",
+      description ||
+      "خدمات منزلية شاملة في جميع مدن المملكة العربية السعودية: سباكة، تنظيف، صيانة، عزل، تنسيق حدائق، نقل عفش ومقاولات عامة.",
+    telephone: business.phone,
+    priceRange: business.priceRange,
     address: {
       "@type": "PostalAddress",
       streetAddress: business.address.streetEn,
-      addressLocality: business.address.cityEn,
-      addressRegion: business.address.regionEn,
+      addressLocality: city ? city.nameEn : business.address.cityEn,
+      addressRegion: city ? city.nameEn : business.address.regionEn,
       postalCode: business.address.postalCode,
       addressCountry: business.address.country,
     },
+    ...(city
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: city.lat,
+            longitude: city.lng,
+          },
+          areaServed: {
+            "@type": "City",
+            name: city.nameAr,
+          },
+        }
+      : {
+          areaServed: {
+            "@type": "Country",
+            name: "Saudi Arabia",
+          },
+        }),
     contactPoint: {
       "@type": "ContactPoint",
       telephone: business.phone,
@@ -29,10 +62,7 @@ export default function OrganizationJsonLd() {
       business.social.twitter,
       business.social.instagram,
       business.social.facebook,
-      business.social.tiktok,
-      business.social.youtube,
     ].filter(Boolean),
-    priceRange: business.priceRange,
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: business.openingHours.days,

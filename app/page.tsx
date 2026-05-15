@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { Metadata } from "next";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { ServiceCard } from "@/components/ServiceCard";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -18,8 +19,30 @@ import {
   Truck,
   MessageCircle,
   Phone,
+  MapPin,
 } from "lucide-react";
 import OrganizationJsonLd from "./_components/OrganizationJsonLd";
+
+export const metadata: Metadata = {
+  title: "شركة الزاهر فيو | خدمات منزلية شاملة في الرياض، جدة، والدمام",
+  description:
+    "أفضل شركة خدمات منزلية في السعودية. تنظيف، صيانة، سباكة، ونقل عفش في الرياض، جدة، الدمام، مكة، المدينة، الطائف، أبها، تبوك، بريدة، وخميس مشيط.",
+  keywords: [
+    "شركة تنظيف",
+    "صيانة منازل",
+    "نقل عفش",
+    "الرياض",
+    "جدة",
+    "الدمام",
+    "مكة المكرمة",
+    "المدينة المنورة",
+    "الطائف",
+    "أبها",
+    "تبوك",
+    "بريدة",
+    "خميس مشيط",
+  ],
+};
 
 export default function HomePage() {
   const heroSlides = [
@@ -213,6 +236,19 @@ export default function HomePage() {
     },
   ];
 
+  const serviceAreas = [
+    "الرياض",
+    "جدة",
+    "الدمام",
+    "مكة المكرمة",
+    "المدينة المنورة",
+    "الطائف",
+    "أبها",
+    "تبوك",
+    "بريدة",
+    "خميس مشيط",
+  ];
+
   return (
     <div className="min-h-screen">
       <OrganizationJsonLd />
@@ -286,7 +322,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
       <section className="bg-secondary/30 py-16">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
@@ -319,6 +354,32 @@ export default function HomePage() {
             <Button asChild size="lg" variant="outline">
               <Link href="/works">مشاهدة جميع أعمالنا</Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Service Areas Section */}
+      <section className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
+              مناطق الخدمة
+            </h2>
+            <p className="mx-auto max-w-2xl text-lg text-gray-600">
+              نتواجد لخدمتكم في أهم مدن المملكة العربية السعودية
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+            {serviceAreas.map((area, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-center rounded-lg border border-gray-100 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"
+              >
+                <MapPin className="ml-2 h-5 w-5 text-primary" />
+                <span className="font-semibold text-gray-800">{area}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
