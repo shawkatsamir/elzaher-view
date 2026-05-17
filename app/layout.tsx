@@ -9,6 +9,8 @@ import { Footer } from "@/components/Footer";
 import { StickyContactButons } from "@/components/StickyContactButton";
 import { business } from "@/app/lib/business";
 
+const isProduction = process.env.VERCEL_ENV === "production";
+
 export const metadata: Metadata = {
   metadataBase: new URL(business.baseUrl),
   title: {
@@ -32,6 +34,7 @@ export const metadata: Metadata = {
     "جدة",
   ],
   alternates: {
+    canonical: "/",
     languages: {
       "ar-SA": "/",
       "x-default": "/",
@@ -45,6 +48,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+  },
+  robots: isProduction
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
+  other: {
+    "geo.region": "SA-01",
+    "geo.placename": "Riyadh, Saudi Arabia",
+    "geo.position": "24.7136;46.6753",
+    ICBM: "24.7136, 46.6753",
   },
 };
 
