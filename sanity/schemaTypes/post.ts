@@ -50,7 +50,22 @@ export default defineType({
       title: "Slug (URL)",
       type: "slug",
       group: "content",
-      options: { source: "title" },
+      options: {
+        source: "title",
+        // Preserve Arabic (U+0600-U+06FF) + Latin alphanumerics so Arabic titles
+        // produce Arabic slugs (Google's #1 Arabic ranking signal — exact-match
+        // keyword in the URL). Default slugify strips non-ASCII, yielding empty slugs
+        // for Arabic-only titles.
+        slugify: (input) =>
+          input
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^؀-ۿa-z0-9-]/g, "")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "")
+            .slice(0, 96),
+      },
       validation: (Rule) => Rule.required(),
     }),
     defineField({

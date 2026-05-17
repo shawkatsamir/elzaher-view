@@ -13,6 +13,36 @@ const englishToServiceSlug: Record<string, string> = {
   insulation: "عزل",
 };
 
+// Phase G4: blog posts migrated from Latin transliteration slugs to Arabic
+// exact-match slugs. 301-redirect every old URL to preserve any inbound links
+// and indexed pages.
+const blogPostSlugMigrations: Array<{
+  category: string;
+  oldSlug: string;
+  newSlug: string;
+}> = [
+  {
+    category: "cleaning",
+    oldSlug: "steam-clean-sofa-guide",
+    newSlug: "تنظيف-الكنب-بالبخار",
+  },
+  {
+    category: "flooring-installation",
+    oldSlug: "parquet-vs-wood-flooring",
+    newSlug: "الفرق-بين-الباركيه-والخشب",
+  },
+  {
+    category: "flooring-installation",
+    oldSlug: "tile-installation-guide",
+    newSlug: "طريقة-تركيب-البلاط",
+  },
+  {
+    category: "الصيانة-المنزلية",
+    oldSlug: "ac-maintenance-before-summer",
+    newSlug: "صيانة-المكيف-قبل-الصيف",
+  },
+];
+
 const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
@@ -51,6 +81,14 @@ const nextConfig: NextConfig = {
           permanent: true,
         });
       }
+    }
+
+    for (const { category, oldSlug, newSlug } of blogPostSlugMigrations) {
+      redirects.push({
+        source: `/blog/${category}/${oldSlug}`,
+        destination: `/blog/${category}/${newSlug}`,
+        permanent: true,
+      });
     }
 
     return redirects;
