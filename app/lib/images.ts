@@ -93,4 +93,28 @@ export const IMG: Record<string, ServiceImages> = {
       foam: u("photo-1530124566582-a618bc2615dc"),
     },
   },
+  parquet: {
+    gallery: [
+      { src: u("photo-1581858726788-75bc0f6a952d", 1080), alt: "تركيب باركية خشب في فيلا حديثة" },
+      { src: u("photo-1556909114-f6e7ad7d3136", 800), alt: "أرضيات باركية مهندس بألوان دافئة" },
+      { src: u("photo-1505691938895-1758d7feb511", 800), alt: "معلم تركيب باركية محترف" },
+    ],
+    sub: {
+      natural: u("photo-1581858726788-75bc0f6a952d"),
+      engineered: u("photo-1556909114-f6e7ad7d3136"),
+      vinyl: u("photo-1505691938895-1758d7feb511"),
+    },
+  },
+  ceramic: {
+    gallery: [
+      { src: u("photo-1581094288338-2314dddb7ece", 1080), alt: "تركيب سيراميك أرضيات بمعلم محترف" },
+      { src: u("photo-1600585154340-be6161a56a0c", 800), alt: "تركيب بورسلين كبير الحجم" },
+      { src: u("photo-1615873968403-89e068629265", 800), alt: "تركيب رخام وجرانيت فاخر" },
+    ],
+    sub: {
+      tile: u("photo-1581094288338-2314dddb7ece"),
+      porcelain: u("photo-1600585154340-be6161a56a0c"),
+      marble: u("photo-1615873968403-89e068629265"),
+    },
+  },
 };
