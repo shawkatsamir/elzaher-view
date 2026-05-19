@@ -15,6 +15,7 @@ import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
 import { themes } from "./theme";
 import { getNearbyCities, type City } from "@/app/lib/locations";
 import type { Service, FaqItem } from "@/app/lib/services";
+import { getCityServiceContent } from "@/app/lib/city-service-content";
 import {
   buildServiceCitySlug,
   buildSubServiceCitySlug,
@@ -29,6 +30,15 @@ interface ServiceCityTemplateProps {
 }
 
 function buildCityFaqs(service: Service, city: City): FaqItem[] {
+  const cityContent = getCityServiceContent(city.slug, service.slug);
+  if (cityContent && cityContent.cityFaqs.length > 0) {
+    // Use city-specific FAQs + 1 shared FAQ for minimal overlap
+    return [
+      ...cityContent.cityFaqs,
+      service.hubFaqs[0],
+    ];
+  }
+  // Fallback: generic city FAQs (for cities without content yet)
   return [
     {
       question: `هل تغطون جميع أحياء ${city.nameAr}؟`,
@@ -52,6 +62,7 @@ export default function ServiceCityTemplate({
   const pageUrl = `/${slug}`;
   const faqs = buildCityFaqs(service, city);
   const nearbyCities = getNearbyCities(city.slug);
+  const cityContent = getCityServiceContent(city.slug, service.slug);
 
   const otherServicesInCity = services.filter(
     (s) => s.slug !== service.slug,
@@ -97,9 +108,8 @@ export default function ServiceCityTemplate({
                 أفضل {service.titleAr} في {city.nameAr}
               </h1>
               <p className="mb-8 text-lg leading-relaxed text-gray-600">
-                هل تبحث عن {service.titleAr} موثوقة في {city.nameAr}؟ نوفر لكم
-                فريقاً متخصصاً يصلكم في أي حي من أحياء {city.nameAr} بأحدث
-                التقنيات وأفضل الأسعار.
+                {cityContent?.intro ??
+                  `هل تبحث عن ${service.titleAr} موثوقة في ${city.nameAr}؟ نوفر لكم فريقاً متخصصاً يصلكم في أي حي من أحياء ${city.nameAr} بأحدث التقنيات وأفضل الأسعار.`}
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Button
@@ -130,7 +140,7 @@ export default function ServiceCityTemplate({
         </div>
       </section>
 
-      {/* Local context */}
+      {/* Local context + challenges */}
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl">
@@ -138,7 +148,7 @@ export default function ServiceCityTemplate({
               {service.titleAr} في {city.nameAr}: تحديات محلية وحلول متخصصة
             </h2>
             <p className="text-lg leading-relaxed text-gray-600">
-              {city.localContext}
+              {cityContent?.challenges ?? city.localContext}
             </p>
             <p className="mt-4 text-lg leading-relaxed text-gray-600">
               {service.longDescriptionAr}
@@ -146,6 +156,22 @@ export default function ServiceCityTemplate({
           </div>
         </div>
       </section>
+
+      {/* Why choose us in this city */}
+      {cityContent?.whyUs && (
+        <section className="bg-gray-50 py-16">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl">
+              <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
+                لماذا تختارنا في {city.nameAr}
+              </h2>
+              <p className="text-lg leading-relaxed text-gray-600">
+                {cityContent.whyUs}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Neighborhoods coverage */}
       <section className={`relative overflow-hidden ${t.darkBg} py-16 text-white`}>
