@@ -14,6 +14,7 @@ import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
 import { themes } from "./theme";
 import { getNearbyCities, type City } from "@/app/lib/locations";
 import type { Service, SubService, FaqItem } from "@/app/lib/services";
+import { getCityServiceContent } from "@/app/lib/city-service-content";
 import {
   buildServiceCitySlug,
   buildSubServiceCitySlug,
@@ -28,14 +29,18 @@ interface SubServiceCityTemplateProps {
 }
 
 function buildSubServiceCityFaqs(
+  service: Service,
   subService: SubService,
   city: City,
 ): FaqItem[] {
+  const cityContent = getCityServiceContent(city.slug, service.slug);
+  const cityFaq = cityContent?.cityFaqs[0];
   return [
     {
       question: `هل تقدمون خدمة ${subService.titleAr} في جميع أحياء ${city.nameAr}؟`,
       answer: `نعم، فرقنا تغطي جميع أحياء ${city.nameAr} بما فيها ${city.neighborhoods.slice(0, 4).join("، ")}، ونصل إليكم في أسرع وقت.`,
     },
+    ...(cityFaq ? [cityFaq] : []),
     ...subService.faqs,
   ];
 }
@@ -49,8 +54,9 @@ export default function SubServiceCityTemplate({
   const t = themes[service.colorTheme];
   const slug = buildSubServiceCitySlug(subService, city);
   const pageUrl = `/${slug}`;
-  const faqs = buildSubServiceCityFaqs(subService, city);
+  const faqs = buildSubServiceCityFaqs(service, subService, city);
   const nearbyCities = getNearbyCities(city.slug);
+  const cityContent = getCityServiceContent(city.slug, service.slug);
 
   return (
     <main className="flex-1">
@@ -160,7 +166,7 @@ export default function SubServiceCityTemplate({
               لماذا تختلف {subService.titleAr} في {city.nameAr}؟
             </h2>
             <p className={`text-lg leading-relaxed ${t.outlineText}`}>
-              {city.localContext}
+              {cityContent?.challenges ?? city.localContext}
             </p>
             <div className="mt-8 grid grid-cols-2 gap-2 text-sm md:grid-cols-3">
               {city.neighborhoods.slice(0, 9).map((n) => (
