@@ -11,13 +11,24 @@
  *            subServiceCityFaqs, subService.faqs dropped)
  *
  * Usage: npx tsx scripts/eval-page-dedup.ts plumbing
+ *        npx tsx scripts/eval-page-dedup.ts            # all authored services
  */
 import { services } from "../app/lib/services";
 import { cities } from "../app/lib/locations";
-import { subServiceCity, serviceCity } from "../app/lib/city-content/plumbing";
 import type { SubServiceCityContent, CityServiceContent } from "../app/lib/city-content/types";
 
-const SERVICE_SLUG = "سباكة";
+// per-service file → service.slug
+const FILE_TO_SLUG: Record<string, string> = {
+  plumbing: "سباكة",
+  cleaning: "تنظيف",
+  maintenance: "صيانة",
+  landscaping: "تنسيق-حدائق",
+  contracting: "مقاولات",
+  moving: "نقل-عفش",
+  insulation: "عزل",
+  parquet: "باركية",
+  ceramic: "سيراميك",
+};
 
 function norm(t: string): string {
   return t
@@ -53,85 +64,99 @@ function avgPairwise(texts: string[]): number {
   return sum / n;
 }
 
-const service = services.find((s) => s.slug === SERVICE_SLUG)!;
-
-function buildBefore(subSlug: string, citySlug: string): string {
-  const sub = service.subServices.find((s) => s.slug === subSlug)!;
-  const city = cities.find((c) => c.slug === citySlug)!;
-  const cityContent: CityServiceContent | undefined =
-    serviceCity[`${citySlug}::${SERVICE_SLUG}`];
-  const parts = [
-    `${sub.titleAr} في ${city.nameAr}`,
-    `${sub.longAr} نخدم سكان ${city.nameAr} وضواحيها على مدار الساعة.`,
-    `كيف ننفذ ${sub.titleAr} في ${city.nameAr}`,
-    ...sub.techniques,
-    `لماذا تختلف ${sub.titleAr} في ${city.nameAr}؟`,
-    cityContent?.challenges ?? city.localContext,
-    ...city.neighborhoods.slice(0, 9),
-    `الأسئلة الشائعة حول ${sub.titleAr} في ${city.nameAr}`,
-    `هل تقدمون خدمة ${sub.titleAr} في جميع أحياء ${city.nameAr}؟`,
-    `نعم، فرقنا تغطي جميع أحياء ${city.nameAr} بما فيها ${city.neighborhoods.slice(0, 4).join("، ")}، ونصل إليكم في أسرع وقت.`,
-    ...(cityContent ? [cityContent.cityFaqs[0].question, cityContent.cityFaqs[0].answer] : []),
-    ...sub.faqs.flatMap((f) => [f.question, f.answer]),
-    `خدمات ${service.titleAr} الأخرى في ${city.nameAr}`,
-    ...service.subServices.filter((s) => s.slug !== subSlug).flatMap((s) => [s.titleAr, s.shortAr]),
-  ];
-  return parts.join(" ");
-}
-
-function buildAfter(subSlug: string, citySlug: string): string {
-  const sub = service.subServices.find((s) => s.slug === subSlug)!;
-  const city = cities.find((c) => c.slug === citySlug)!;
-  const cityContent: CityServiceContent | undefined =
-    serviceCity[`${citySlug}::${SERVICE_SLUG}`];
-  const subC: SubServiceCityContent | undefined =
-    subServiceCity[`${citySlug}::${SERVICE_SLUG}::${subSlug}`];
-  const parts = [
-    `${sub.titleAr} في ${city.nameAr}`,
-    subC?.cityAdaptedIntro ?? `${sub.longAr} نخدم سكان ${city.nameAr} وضواحيها على مدار الساعة.`,
-    `كيف ننفذ ${sub.titleAr} في ${city.nameAr}`,
-    ...(subC?.techniquesNote ? [subC.techniquesNote] : []),
-    ...sub.techniques,
-    ...(subC?.pricingNote ? [`أسعار وتوفر ${sub.titleAr} في ${city.nameAr}`, subC.pricingNote] : []),
-    `لماذا تختلف ${sub.titleAr} في ${city.nameAr}؟`,
-    cityContent?.challenges ?? city.localContext,
-    ...city.neighborhoods.slice(0, 9),
-    `الأسئلة الشائعة حول ${sub.titleAr} في ${city.nameAr}`,
-    ...(subC?.subServiceCityFaqs ?? []).flatMap((f) => [f.question, f.answer]),
-    `هل تقدمون خدمة ${sub.titleAr} في جميع أحياء ${city.nameAr}؟`,
-    `نعم، فرقنا تغطي جميع أحياء ${city.nameAr} بما فيها ${city.neighborhoods.slice(0, 4).join("، ")}، ونصل إليكم في أسرع وقت.`,
-    ...(cityContent ? [cityContent.cityFaqs[0].question, cityContent.cityFaqs[0].answer] : []),
-    ...(subC ? [] : sub.faqs.flatMap((f) => [f.question, f.answer])),
-    `خدمات ${service.titleAr} الأخرى في ${city.nameAr}`,
-    ...service.subServices.filter((s) => s.slug !== subSlug).flatMap((s) => [s.titleAr, s.shortAr]),
-  ];
-  return parts.join(" ");
-}
-
 const citySlugs = cities.map((c) => c.slug);
-console.log(`Service: ${service.titleAr}\n`);
-console.log("sub-service              | cross-city sim BEFORE | AFTER | body words (after)");
-console.log("-------------------------|-----------------------|-------|-------------------");
-for (const sub of service.subServices) {
-  const before = avgPairwise(citySlugs.map((c) => buildBefore(sub.slug, c)));
-  const after = avgPairwise(citySlugs.map((c) => buildAfter(sub.slug, c)));
-  const wc = Math.round(
-    citySlugs.map((c) => words(buildAfter(sub.slug, c)).length).reduce((a, b) => a + b, 0) /
-      citySlugs.length,
-  );
-  console.log(
-    `${sub.titleAr.padEnd(24)} | ${(before * 100).toFixed(0).padStart(19)}% | ${(after * 100).toFixed(0).padStart(3)}% | ${String(wc).padStart(17)}`,
-  );
+
+async function evalService(file: string) {
+  const slug = FILE_TO_SLUG[file];
+  if (!slug) {
+    console.error(`unknown service file: ${file}`);
+    return;
+  }
+  const service = services.find((s) => s.slug === slug)!;
+  const mod = await import(`../app/lib/city-content/${file}.ts`);
+  const serviceCity: Record<string, CityServiceContent> = mod.serviceCity ?? {};
+  const subServiceCity: Record<string, SubServiceCityContent> =
+    mod.subServiceCity ?? {};
+
+  const buildBefore = (subSlug: string, citySlug: string): string => {
+    const sub = service.subServices.find((s) => s.slug === subSlug)!;
+    const city = cities.find((c) => c.slug === citySlug)!;
+    const cc = serviceCity[`${citySlug}::${slug}`];
+    return [
+      `${sub.titleAr} في ${city.nameAr}`,
+      `${sub.longAr} نخدم سكان ${city.nameAr} وضواحيها على مدار الساعة.`,
+      `كيف ننفذ ${sub.titleAr} في ${city.nameAr}`,
+      ...sub.techniques,
+      `لماذا تختلف ${sub.titleAr} في ${city.nameAr}؟`,
+      cc?.challenges ?? city.localContext,
+      ...city.neighborhoods.slice(0, 9),
+      `الأسئلة الشائعة حول ${sub.titleAr} في ${city.nameAr}`,
+      `هل تقدمون خدمة ${sub.titleAr} في جميع أحياء ${city.nameAr}؟`,
+      `نعم، فرقنا تغطي جميع أحياء ${city.nameAr} بما فيها ${city.neighborhoods.slice(0, 4).join("، ")}، ونصل إليكم في أسرع وقت.`,
+      ...(cc ? [cc.cityFaqs[0].question, cc.cityFaqs[0].answer] : []),
+      ...sub.faqs.flatMap((f) => [f.question, f.answer]),
+      `خدمات ${service.titleAr} الأخرى في ${city.nameAr}`,
+      ...service.subServices.filter((s) => s.slug !== subSlug).flatMap((s) => [s.titleAr, s.shortAr]),
+    ].join(" ");
+  };
+
+  const buildAfter = (subSlug: string, citySlug: string): string => {
+    const sub = service.subServices.find((s) => s.slug === subSlug)!;
+    const city = cities.find((c) => c.slug === citySlug)!;
+    const cc = serviceCity[`${citySlug}::${slug}`];
+    const subC = subServiceCity[`${citySlug}::${slug}::${subSlug}`];
+    return [
+      `${sub.titleAr} في ${city.nameAr}`,
+      subC?.cityAdaptedIntro ?? `${sub.longAr} نخدم سكان ${city.nameAr} وضواحيها على مدار الساعة.`,
+      `كيف ننفذ ${sub.titleAr} في ${city.nameAr}`,
+      ...(subC?.techniquesNote ? [subC.techniquesNote] : []),
+      ...sub.techniques,
+      ...(subC?.pricingNote ? [`أسعار وتوفر ${sub.titleAr} في ${city.nameAr}`, subC.pricingNote] : []),
+      `لماذا تختلف ${sub.titleAr} في ${city.nameAr}؟`,
+      cc?.challenges ?? city.localContext,
+      ...city.neighborhoods.slice(0, 9),
+      `الأسئلة الشائعة حول ${sub.titleAr} في ${city.nameAr}`,
+      ...(subC?.subServiceCityFaqs ?? []).flatMap((f) => [f.question, f.answer]),
+      `هل تقدمون خدمة ${sub.titleAr} في جميع أحياء ${city.nameAr}؟`,
+      `نعم، فرقنا تغطي جميع أحياء ${city.nameAr} بما فيها ${city.neighborhoods.slice(0, 4).join("، ")}، ونصل إليكم في أسرع وقت.`,
+      ...(cc ? [cc.cityFaqs[0].question, cc.cityFaqs[0].answer] : []),
+      ...(subC ? [] : sub.faqs.flatMap((f) => [f.question, f.answer])),
+      `خدمات ${service.titleAr} الأخرى في ${city.nameAr}`,
+      ...service.subServices.filter((s) => s.slug !== subSlug).flatMap((s) => [s.titleAr, s.shortAr]),
+    ].join(" ");
+  };
+
+  console.log(`\n=== ${file} (${service.titleAr}) ===`);
+  console.log("sub-service              | cross-city BEFORE | AFTER | body words");
+  console.log("-------------------------|-------------------|-------|-----------");
+  for (const sub of service.subServices) {
+    const before = avgPairwise(citySlugs.map((c) => buildBefore(sub.slug, c)));
+    const after = avgPairwise(citySlugs.map((c) => buildAfter(sub.slug, c)));
+    const wc = Math.round(
+      citySlugs.map((c) => words(buildAfter(sub.slug, c)).length).reduce((a, b) => a + b, 0) /
+        citySlugs.length,
+    );
+    console.log(
+      `${sub.titleAr.padEnd(24)} | ${(before * 100).toFixed(0).padStart(15)}% | ${(after * 100).toFixed(0).padStart(3)}% | ${String(wc).padStart(10)}`,
+    );
+  }
+  let worstSub = 0;
+  for (const city of cities) {
+    worstSub = Math.max(
+      worstSub,
+      avgPairwise(service.subServices.map((s) => buildAfter(s.slug, city.slug))),
+    );
+  }
+  console.log(`worst cross-sub (within a city), AFTER: ${(worstSub * 100).toFixed(0)}%`);
 }
 
-// Cross-sub similarity within a city (internal duplication among the 3 siblings).
-console.log("\ncross-sub sim within a city (3 siblings):");
-console.log("city          | BEFORE | AFTER");
-console.log("--------------|--------|------");
-for (const city of cities) {
-  const before = avgPairwise(service.subServices.map((s) => buildBefore(s.slug, city.slug)));
-  const after = avgPairwise(service.subServices.map((s) => buildAfter(s.slug, city.slug)));
-  console.log(
-    `${city.slug.padEnd(13)} | ${(before * 100).toFixed(0).padStart(5)}% | ${(after * 100).toFixed(0).padStart(4)}%`,
-  );
+async function main() {
+  const arg = process.argv[2];
+  const targets = arg ? [arg] : Object.keys(FILE_TO_SLUG);
+  for (const file of targets) await evalService(file);
 }
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
