@@ -15,7 +15,7 @@ import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
 import { themes } from "./theme";
 import { getNearbyCities, type City } from "@/app/lib/locations";
 import type { Service, FaqItem } from "@/app/lib/services";
-import { getCityServiceContent } from "@/app/lib/city-service-content";
+import { getCityServiceContent } from "@/app/lib/city-content";
 import {
   buildServiceCitySlug,
   buildSubServiceCitySlug,

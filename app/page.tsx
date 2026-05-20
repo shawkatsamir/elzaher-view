@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { telLink, whatsappLink } from "@/app/lib/business";
 import { Metadata } from "next";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { ServiceCard } from "@/components/ServiceCard";
@@ -432,7 +433,7 @@ export default function HomePage() {
               className="flex items-center space-x-2 space-x-reverse"
               asChild
             >
-              <a href="tel:+966590123782">
+              <a href={telLink()}>
                 <Phone className="h-5 w-5" />
                 <span>اتصل الآن</span>
               </a>
@@ -445,7 +446,7 @@ export default function HomePage() {
               asChild
             >
               <a
-                href="https://wa.me/966590123782"
+                href={whatsappLink()}
                 target="_blank"
                 rel="noopener noreferrer"
               >
