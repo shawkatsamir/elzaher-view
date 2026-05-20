@@ -14,7 +14,10 @@ import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
 import { themes } from "./theme";
 import { getNearbyCities, type City } from "@/app/lib/locations";
 import type { Service, SubService, FaqItem } from "@/app/lib/services";
-import { getCityServiceContent } from "@/app/lib/city-service-content";
+import {
+  getCityServiceContent,
+  getSubServiceCityContent,
+} from "@/app/lib/city-content";
 import {
   buildServiceCitySlug,
   buildSubServiceCitySlug,
@@ -34,14 +37,22 @@ function buildSubServiceCityFaqs(
   city: City,
 ): FaqItem[] {
   const cityContent = getCityServiceContent(city.slug, service.slug);
+  const subContent = getSubServiceCityContent(
+    city.slug,
+    service.slug,
+    subService.slug,
+  );
   const cityFaq = cityContent?.cityFaqs[0];
   return [
+    ...(subContent?.subServiceCityFaqs ?? []),
     {
       question: `هل تقدمون خدمة ${subService.titleAr} في جميع أحياء ${city.nameAr}؟`,
       answer: `نعم، فرقنا تغطي جميع أحياء ${city.nameAr} بما فيها ${city.neighborhoods.slice(0, 4).join("، ")}، ونصل إليكم في أسرع وقت.`,
     },
     ...(cityFaq ? [cityFaq] : []),
-    ...subService.faqs,
+    // Shared sub-service FAQs only while the page is unauthored — once city-specific
+    // content exists they live solely on the sub-service hub to avoid 11-way duplication.
+    ...(subContent ? [] : subService.faqs),
   ];
 }
 
@@ -57,6 +68,11 @@ export default function SubServiceCityTemplate({
   const faqs = buildSubServiceCityFaqs(service, subService, city);
   const nearbyCities = getNearbyCities(city.slug);
   const cityContent = getCityServiceContent(city.slug, service.slug);
+  const subContent = getSubServiceCityContent(
+    city.slug,
+    service.slug,
+    subService.slug,
+  );
 
   return (
     <main className="flex-1">
@@ -102,8 +118,8 @@ export default function SubServiceCityTemplate({
                 {subService.titleAr} في {city.nameAr}
               </h1>
               <p className="mb-8 text-lg leading-relaxed text-gray-600">
-                {subService.longAr} نخدم سكان {city.nameAr} وضواحيها على مدار
-                الساعة.
+                {subContent?.cityAdaptedIntro ??
+                  `${subService.longAr} نخدم سكان ${city.nameAr} وضواحيها على مدار الساعة.`}
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Button
@@ -141,6 +157,11 @@ export default function SubServiceCityTemplate({
             <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">
               كيف ننفذ {subService.titleAr} في {city.nameAr}
             </h2>
+            {subContent?.techniquesNote && (
+              <p className="mb-8 text-lg leading-relaxed text-gray-700">
+                {subContent.techniquesNote}
+              </p>
+            )}
             <ul className="space-y-4">
               {subService.techniques.map((tech, i) => (
                 <li
@@ -157,6 +178,21 @@ export default function SubServiceCityTemplate({
           </div>
         </div>
       </section>
+
+      {subContent?.pricingNote && (
+        <section className="bg-white py-16">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl">
+              <h2 className="mb-6 text-3xl font-bold text-gray-900">
+                أسعار وتوفر {subService.titleAr} في {city.nameAr}
+              </h2>
+              <p className="text-lg leading-relaxed text-gray-700">
+                {subContent.pricingNote}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Local context */}
       <section className={`${t.darkBg} py-16 text-white`}>

@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { client } from "../../../../sanity/client";
 import { POST_QUERY, POSTS_QUERY } from "../../../../sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
-import { absoluteUrl } from "@/app/lib/business";
-
+import { absoluteUrl, telLink, whatsappLink } from "@/app/lib/business";
+import { getServiceCitySlug } from "@/app/lib/slug-registry";
+import { getService } from "@/app/lib/services";
+import { cities } from "@/app/lib/locations";
 import { PortableText } from "@portabletext/react";
 import { Img } from "../../../../components/Image";
 import {
@@ -252,6 +254,37 @@ export default async function PostPage({ params }: PostPageProps) {
   const headings = post.tocAuto ? extractHeadings(post.body) : [];
   const postPath = `/blog/${category}/${decodedSlug}`;
 
+  const commercialLinks: { title: string; url: string }[] = [];
+  if (post.relatedServices && post.relatedServices.length > 0) {
+    for (const serviceSlug of post.relatedServices) {
+      const service = getService(serviceSlug);
+      if (service) {
+        if (post.relatedCity) {
+          const city = cities.find((c) => c.slug === post.relatedCity);
+          if (city) {
+            const citySlugStr = getServiceCitySlug(serviceSlug, post.relatedCity);
+            if (citySlugStr) {
+              commercialLinks.push({
+                title: `${service.titleAr} في ${city.nameAr}`,
+                url: `/${citySlugStr}`,
+              });
+            }
+          } else {
+            commercialLinks.push({
+              title: service.hubTitleAr,
+              url: `/${service.hubSlug}`,
+            });
+          }
+        } else {
+          commercialLinks.push({
+            title: service.hubTitleAr,
+            url: `/${service.hubSlug}`,
+          });
+        }
+      }
+    }
+  }
+
   return (
     <article className="min-h-screen bg-white pt-24">
       <JsonLd post={post} slug={decodedSlug} categorySlug={category} />
@@ -488,6 +521,27 @@ export default async function PostPage({ params }: PostPageProps) {
                     />
                   )}
 
+                  {/* Related Services */}
+                  {commercialLinks.length > 0 && (
+                    <div className="mt-8 border-t pt-8">
+                      <h3 className="mb-4 text-xl font-bold text-gray-900">
+                        خدماتنا المتخصصة
+                      </h3>
+                      <div className="flex flex-wrap gap-3">
+                        {commercialLinks.map((link) => (
+                          <Link
+                            key={link.url}
+                            href={link.url}
+                            className="flex items-center rounded-lg bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-700 transition-colors hover:bg-indigo-100 hover:text-indigo-900"
+                          >
+                            {link.title}
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Keywords Section */}
                   {post.keywords && post.keywords.length > 0 && (
                     <div className="mt-8 border-t pt-6">
@@ -575,7 +629,7 @@ export default async function PostPage({ params }: PostPageProps) {
                         className="flex items-center space-x-2 space-x-reverse"
                         asChild
                       >
-                        <a href="tel:+966590123782">
+                        <a href={telLink()}>
                           <Phone className="h-5 w-5" />
                           <span>اتصل الآن</span>
                         </a>
@@ -588,7 +642,7 @@ export default async function PostPage({ params }: PostPageProps) {
                         asChild
                       >
                         <a
-                          href="https://wa.me/966590123782"
+                          href={whatsappLink()}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

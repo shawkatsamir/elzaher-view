@@ -11,6 +11,8 @@ const englishToServiceSlug: Record<string, string> = {
   contracting: "مقاولات",
   fernature: "نقل-عفش",
   insulation: "عزل",
+  parquet: "باركية",
+  ceramic: "سيراميك",
 };
 
 // Phase G4: blog posts migrated from Latin transliteration slugs to Arabic
