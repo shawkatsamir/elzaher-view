@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { getPageDescriptor } from "../../app/lib/slug-registry";
 
 export const infoCallout = defineType({
   name: "infoCallout",
@@ -105,7 +106,14 @@ export const internalServiceLink = defineType({
       description:
         "Arabic slug of the service or service×city page to link to. Examples: شركة-سباكة, سباك-الرياض, كشف-تسريبات-جدة.",
       type: "string",
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.required().custom((slug) => {
+          if (typeof slug !== "string" || slug.length === 0) return true;
+          const normalized = slug.replace(/^\//, "");
+          return getPageDescriptor(normalized)
+            ? true
+            : `لا توجد صفحة بهذا الرابط: «${slug}». تحقق من الإملاء (مثل الهمزة: أ مقابل ا، أو اسم المدينة).`;
+        }),
     }),
     defineField({
       name: "label",

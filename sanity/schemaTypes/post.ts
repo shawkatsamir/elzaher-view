@@ -206,11 +206,13 @@ export default defineType({
       options: { layout: "tags" },
     }),
     defineField({
-      name: "relatedCity",
-      title: "Related City",
+      name: "relatedCities",
+      title: "Related Cities",
       description:
-        "City slug if this post is specifically about a city. Example: riyadh, jeddah, dammam.",
-      type: "string",
+        "City slugs this post specifically targets, for local ranking. Leave empty for nationwide posts — each related service then auto-links to its own working area (e.g. نقل-عفش → medina, عزل → mecca). Slugs: riyadh, jeddah, dammam, mecca, medina, taif, abha, tabuk, buraydah, khamis-mushait.",
+      type: "array",
+      of: [{ type: "string" }],
+      options: { layout: "tags" },
       group: "relations",
     }),
     defineField({
