@@ -51,7 +51,7 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0] {
   },
   readTime,
   relatedServices,
-  relatedCity,
+  "relatedCities": coalesce(relatedCities, [relatedCity][defined(relatedCity)]),
   targetKeywords,
   "category": categories[0]->{title, slug, description, seoTitle},
   "relatedPosts": relatedPosts[]->{
@@ -121,7 +121,7 @@ export const RELATED_POSTS_BY_SERVICE_AND_CITY_QUERY = groq`*[
   _type == "post"
   && defined(slug.current)
   && $serviceSlug in relatedServices
-  && relatedCity == $citySlug
+  && ($citySlug in relatedCities || relatedCity == $citySlug)
 ] | order(publishedAt desc) [0...3] {
   _id,
   title,

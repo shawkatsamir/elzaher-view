@@ -126,6 +126,16 @@ export function InternalServiceLinkBlock({
 }) {
   const descriptor = getPageDescriptor(value.slug);
   if (!descriptor || descriptor.kind === "site-map") {
+    // Schema validation should prevent this from ever publishing. As a backstop,
+    // surface it loudly in dev/preview but never show a broken link to visitors.
+    if (process.env.NODE_ENV !== "production") {
+      return (
+        <div className="my-6 rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800">
+          ⚠ رابط داخلي معطّل: لا توجد صفحة بالـ slug «{value.slug}». صحّح الـ slug
+          في لوحة التحكم.
+        </div>
+      );
+    }
     return null;
   }
   const label =

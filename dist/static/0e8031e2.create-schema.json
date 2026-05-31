@@ -1,0 +1,1412 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Post Title"
+      },
+      {
+        "options": {
+          "source": "title"
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug",
+        "title": "Slug (URL)"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "mainImage",
+        "type": "image"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "max",
+                "constraint": 400
+              }
+            ],
+            "level": "warning",
+            "message": "Keep under 400 characters for snippet eligibility."
+          }
+        ],
+        "description": "40-60 word concise answer to the post's main question. Rendered as a styled callout at the top of the post — best shot at winning Google's featured snippet box. Aim for the most important keywords up front.",
+        "name": "featuredAnswer",
+        "type": "text",
+        "title": "Featured Answer (Snippet Target)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "i18nTitleKey": "inputs.portable-text.annotation.link",
+                  "options": {
+                    "modal": {
+                      "type": "popover"
+                    }
+                  },
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/",
+                                    "/^tel$/",
+                                    "/^mailto$/"
+                                  ],
+                                  "allowRelative": true,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "description": "A valid web, email, phone, or relative link.",
+                      "name": "href",
+                      "type": "url",
+                      "title": "Link"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "code",
+                  "title": "Code"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                },
+                {
+                  "value": "strike-through",
+                  "title": "Strike"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h1",
+                "title": "Heading 1"
+              },
+              {
+                "value": "h2",
+                "title": "Heading 2"
+              },
+              {
+                "value": "h3",
+                "title": "Heading 3"
+              },
+              {
+                "value": "h4",
+                "title": "Heading 4"
+              },
+              {
+                "value": "h5",
+                "title": "Heading 5"
+              },
+              {
+                "value": "h6",
+                "title": "Heading 6"
+              },
+              {
+                "value": "blockquote",
+                "title": "Quote"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          },
+          {
+            "options": {
+              "hotspot": true
+            },
+            "type": "image"
+          },
+          {
+            "type": "infoCallout"
+          },
+          {
+            "type": "comparisonTable"
+          },
+          {
+            "type": "internalServiceLink"
+          },
+          {
+            "type": "embeddedFaq",
+            "title": "Embedded FAQ"
+          }
+        ],
+        "name": "body",
+        "type": "array",
+        "title": "Content"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Article (regular post)",
+              "value": "Article"
+            },
+            {
+              "title": "HowTo (step-by-step tutorial)",
+              "value": "HowTo"
+            },
+            {
+              "title": "Guide",
+              "value": "Guide"
+            },
+            {
+              "title": "Comparison (X vs Y)",
+              "value": "Comparison"
+            },
+            {
+              "title": "Listicle (Top N)",
+              "value": "Listicle"
+            }
+          ],
+          "layout": "radio"
+        },
+        "initialValue": "Article",
+        "description": "Drives schema.org type emitted in JSON-LD. Use HowTo for step-by-step tutorials (best for rich results).",
+        "name": "articleType",
+        "type": "string"
+      },
+      {
+        "description": "Numbered steps. Only used when Article Type = HowTo. Emits schema.org HowTo JSON-LD.",
+        "of": [
+          {
+            "type": "howToStep",
+            "title": "How-To Step"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "howToSteps",
+        "type": "array",
+        "title": "How-To Steps"
+      },
+      {
+        "description": "Post-level FAQs. Emits FAQPage JSON-LD — rich results in SERP. Aim for 3-8 questions.",
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "question",
+                "type": "string"
+              },
+              {
+                "rows": 3,
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "answer",
+                "type": "text"
+              }
+            ],
+            "type": "object",
+            "name": "faqItem"
+          }
+        ],
+        "name": "postFaqs",
+        "type": "array",
+        "title": "Post FAQs"
+      },
+      {
+        "initialValue": true,
+        "description": "Auto-build a TOC from H2/H3 headings in body.",
+        "name": "tocAuto",
+        "type": "boolean",
+        "title": "Auto Table of Contents"
+      },
+      {
+        "of": [
+          {
+            "to": [
+              {
+                "type": "category"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to category"
+          }
+        ],
+        "name": "categories",
+        "type": "array"
+      },
+      {
+        "of": [
+          {
+            "to": [
+              {
+                "type": "post"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to blog post"
+          }
+        ],
+        "name": "relatedPosts",
+        "type": "array"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "description": "Service slugs this post relates to (used to surface the post on service landing pages). Example: سباكة, تنظيف, صيانة, تنسيق-حدائق, مقاولات, نقل-عفش, عزل.",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "relatedServices",
+        "type": "array"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "description": "City slugs this post specifically targets, for local ranking. Leave empty for nationwide posts — each related service then auto-links to its own working area (e.g. نقل-عفش → medina, عزل → mecca). Slugs: riyadh, jeddah, dammam, mecca, medina, taif, abha, tabuk, buraydah, khamis-mushait.",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "relatedCities",
+        "type": "array"
+      },
+      {
+        "description": "Reference an Author document (preferred). Falls back to the legacy authorName/authorRole string fields if not set.",
+        "to": [
+          {
+            "type": "author"
+          }
+        ],
+        "name": "author",
+        "type": "reference"
+      },
+      {
+        "description": "Used if no Author reference is set. Prefer the reference for new posts.",
+        "name": "authorName",
+        "type": "string",
+        "title": "Author Name (legacy)"
+      },
+      {
+        "name": "authorRole",
+        "type": "string",
+        "title": "Author Role (legacy)"
+      },
+      {
+        "name": "publishedAt",
+        "type": "date"
+      },
+      {
+        "description": "When this post was last reviewed for accuracy. Displayed as 'آخر مراجعة' on the post — freshness signal.",
+        "name": "lastReviewedAt",
+        "type": "date"
+      },
+      {
+        "description": "Optional. If left empty, computed from body word count at render time (200 wpm).",
+        "name": "readTime",
+        "type": "number",
+        "title": "Read Time (min)"
+      },
+      {
+        "rows": 3,
+        "name": "excerpt",
+        "type": "text",
+        "title": "Short Description"
+      },
+      {
+        "description": "Optional. Overrides the post title in the <title> tag and OG/Twitter. Useful for longer keyword-rich titles.",
+        "name": "seoTitle",
+        "type": "string",
+        "title": "SEO Title"
+      },
+      {
+        "rows": 2,
+        "name": "metaDescription",
+        "type": "text",
+        "title": "SEO Meta Description"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "description": "Optional. Falls back to Main Image. Recommended 1200×630.",
+        "name": "ogImage",
+        "type": "image",
+        "title": "Social Share Image (OG)"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "keywords",
+        "type": "array"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "description": "Primary keywords this post targets. Used for internal QA and possible related-post selection. Different from `keywords` (which lists all relevant tags).",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "targetKeywords",
+        "type": "array",
+        "title": "Target Keywords (SEO planning)"
+      }
+    ],
+    "name": "post",
+    "type": "document",
+    "title": "Blog Post"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "description": "Used as the SEO meta description on the category index page.",
+        "name": "description",
+        "type": "text"
+      },
+      {
+        "description": "Optional. Overrides the category title in the <title> tag. Useful for longer keyword-rich titles.",
+        "name": "seoTitle",
+        "type": "string",
+        "title": "SEO Title"
+      }
+    ],
+    "name": "category",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "description": "e.g. خبير سباكة، مهندس صيانة، مدير الموقع.",
+        "name": "role",
+        "type": "string",
+        "title": "Role / Title"
+      },
+      {
+        "rows": 4,
+        "description": "Short bio (2-4 sentences). Shown under post content to build E-E-A-T trust signals.",
+        "name": "bio",
+        "type": "text"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "photo",
+        "type": "image"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "description": "e.g. سباكة، كشف تسريبات، صيانة.",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "expertise",
+        "type": "array",
+        "title": "Areas of Expertise"
+      },
+      {
+        "name": "yearsExperience",
+        "type": "number",
+        "title": "Years of Experience"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "twitterUrl",
+        "type": "url",
+        "title": "Twitter / X URL"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "linkedinUrl",
+        "type": "url",
+        "title": "LinkedIn URL"
+      }
+    ],
+    "name": "author",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Draft title — final post title may differ.",
+        "name": "workingTitle",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Idea",
+              "value": "idea"
+            },
+            {
+              "title": "Briefed",
+              "value": "briefed"
+            },
+            {
+              "title": "Drafting",
+              "value": "drafting"
+            },
+            {
+              "title": "QA",
+              "value": "qa"
+            },
+            {
+              "title": "Published",
+              "value": "published"
+            },
+            {
+              "title": "Archived",
+              "value": "archived"
+            }
+          ],
+          "layout": "radio"
+        },
+        "initialValue": "idea",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "idea",
+                  "briefed",
+                  "drafting",
+                  "qa",
+                  "published",
+                  "archived"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "High (write this week)",
+              "value": "high"
+            },
+            {
+              "title": "Medium (this month)",
+              "value": "medium"
+            },
+            {
+              "title": "Low (backlog)",
+              "value": "low"
+            }
+          ],
+          "layout": "radio"
+        },
+        "initialValue": "medium",
+        "name": "priority",
+        "type": "string"
+      },
+      {
+        "description": "Reference the post once it's drafted/published.",
+        "to": [
+          {
+            "type": "post"
+          }
+        ],
+        "name": "linkedPost",
+        "type": "reference"
+      },
+      {
+        "rows": 4,
+        "description": "Free-form notes — research findings, source quotes, decisions.",
+        "name": "notes",
+        "type": "text"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "primaryKeyword",
+        "type": "string",
+        "title": "Primary Target Keyword"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "secondaryKeywords",
+        "type": "array"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Informational (how/what/why)",
+              "value": "informational"
+            },
+            {
+              "title": "Commercial (compare/research before buying)",
+              "value": "commercial"
+            },
+            {
+              "title": "Transactional (buy/hire now)",
+              "value": "transactional"
+            },
+            {
+              "title": "Navigational (find a specific brand)",
+              "value": "navigational"
+            }
+          ],
+          "layout": "radio"
+        },
+        "initialValue": "informational",
+        "name": "searchIntent",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Article (regular post)",
+              "value": "Article"
+            },
+            {
+              "title": "HowTo (step-by-step)",
+              "value": "HowTo"
+            },
+            {
+              "title": "Guide",
+              "value": "Guide"
+            },
+            {
+              "title": "Comparison (X vs Y)",
+              "value": "Comparison"
+            },
+            {
+              "title": "Listicle (Top N)",
+              "value": "Listicle"
+            }
+          ],
+          "layout": "radio"
+        },
+        "initialValue": "Article",
+        "description": "Drives the schema.org type emitted in the post JSON-LD.",
+        "name": "articleType",
+        "type": "string"
+      },
+      {
+        "initialValue": 2000,
+        "description": "Body word count target. Recommended: 1800-2200 for KSA Arabic SEO.",
+        "name": "targetWordCount",
+        "type": "number"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "سباكة",
+              "value": "سباكة"
+            },
+            {
+              "title": "تنظيف",
+              "value": "تنظيف"
+            },
+            {
+              "title": "صيانة",
+              "value": "صيانة"
+            },
+            {
+              "title": "تنسيق-حدائق",
+              "value": "تنسيق-حدائق"
+            },
+            {
+              "title": "مقاولات",
+              "value": "مقاولات"
+            },
+            {
+              "title": "نقل-عفش",
+              "value": "نقل-عفش"
+            },
+            {
+              "title": "عزل",
+              "value": "عزل"
+            }
+          ]
+        },
+        "description": "Which service slug this post supports. Used to populate the post's relatedServices later.",
+        "name": "targetService",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Riyadh / الرياض",
+              "value": "riyadh"
+            },
+            {
+              "title": "Jeddah / جدة",
+              "value": "jeddah"
+            },
+            {
+              "title": "Dammam / الدمام",
+              "value": "dammam"
+            },
+            {
+              "title": "Mecca / مكة",
+              "value": "mecca"
+            },
+            {
+              "title": "Medina / المدينة",
+              "value": "medina"
+            },
+            {
+              "title": "Taif / الطائف",
+              "value": "taif"
+            },
+            {
+              "title": "Abha / أبها",
+              "value": "abha"
+            },
+            {
+              "title": "Tabuk / تبوك",
+              "value": "tabuk"
+            },
+            {
+              "title": "Buraydah / بريدة",
+              "value": "buraydah"
+            },
+            {
+              "title": "Khamis Mushait / خميس مشيط",
+              "value": "khamis-mushait"
+            }
+          ]
+        },
+        "description": "City slug if post is geo-specific. Leave empty for evergreen posts.",
+        "name": "targetCity",
+        "type": "string",
+        "title": "Target City (optional)"
+      },
+      {
+        "rows": 4,
+        "description": "The post's snippet bait — 40-60 word concise answer to the primary query.",
+        "name": "featuredAnswerDraft",
+        "type": "text",
+        "title": "Featured Answer Draft (40-60 words)"
+      },
+      {
+        "description": "Outline of body H2 sections in order.",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "plannedH2s",
+        "type": "array",
+        "title": "Planned H2 Sections"
+      },
+      {
+        "description": "Just the questions for now — answers get fleshed out in the post.",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "plannedFaqs",
+        "type": "array",
+        "title": "Planned FAQ Questions"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "description": "Slugs of service pages this post should link to. Example: شركة-سباكة, سباك-الرياض.",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "plannedInternalLinks",
+        "type": "array",
+        "title": "Planned Internal Service Links"
+      },
+      {
+        "description": "URLs of competitor posts ranking for the primary keyword.",
+        "of": [
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "uri",
+                    "constraint": {
+                      "options": {
+                        "scheme": [
+                          "/^http$/",
+                          "/^https$/"
+                        ],
+                        "allowRelative": false,
+                        "relativeOnly": false,
+                        "allowCredentials": false
+                      }
+                    }
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "type": "url"
+          }
+        ],
+        "name": "competitorRefs",
+        "type": "array",
+        "title": "Competitor URLs for Reference"
+      },
+      {
+        "description": "Update monthly from Search Console.",
+        "name": "gscImpressions",
+        "type": "number",
+        "title": "GSC Impressions (last 28 days)"
+      },
+      {
+        "name": "gscClicks",
+        "type": "number",
+        "title": "GSC Clicks (last 28 days)"
+      },
+      {
+        "name": "gscAvgPosition",
+        "type": "number",
+        "title": "GSC Avg Position"
+      },
+      {
+        "name": "lastTrackedAt",
+        "type": "date"
+      }
+    ],
+    "name": "postIdea",
+    "type": "document",
+    "title": "Post Idea (Editorial Backlog)"
+  },
+  {
+    "fields": [
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Tip (نصيحة)",
+              "value": "tip"
+            },
+            {
+              "title": "Warning (تحذير)",
+              "value": "warning"
+            },
+            {
+              "title": "Note (ملاحظة)",
+              "value": "note"
+            },
+            {
+              "title": "Info (معلومة)",
+              "value": "info"
+            }
+          ],
+          "layout": "radio"
+        },
+        "initialValue": "info",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "tip",
+                  "warning",
+                  "note",
+                  "info"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "variant",
+        "type": "string"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "title": "Title (optional)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "i18nTitleKey": "inputs.portable-text.annotation.link",
+                  "options": {
+                    "modal": {
+                      "type": "popover"
+                    }
+                  },
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/",
+                                    "/^tel$/",
+                                    "/^mailto$/"
+                                  ],
+                                  "allowRelative": true,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "description": "A valid web, email, phone, or relative link.",
+                      "name": "href",
+                      "type": "url",
+                      "title": "Link"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "code",
+                  "title": "Code"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                },
+                {
+                  "value": "strike-through",
+                  "title": "Strike"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          }
+        ],
+        "name": "body",
+        "type": "array"
+      }
+    ],
+    "name": "infoCallout",
+    "type": "object"
+  },
+  {
+    "fields": [
+      {
+        "name": "caption",
+        "type": "string",
+        "title": "Caption / Title"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 2
+              },
+              {
+                "flag": "max",
+                "constraint": 6
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Header cells, left-to-right (RTL: right-to-left visually).",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "headers",
+        "type": "array",
+        "title": "Column Headers"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "of": [
+                  {
+                    "type": "string"
+                  }
+                ],
+                "name": "cells",
+                "type": "array"
+              }
+            ],
+            "type": "object",
+            "name": "row"
+          }
+        ],
+        "name": "rows",
+        "type": "array"
+      }
+    ],
+    "name": "comparisonTable",
+    "type": "object"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Arabic slug of the service or service×city page to link to. Examples: شركة-سباكة, سباك-الرياض, كشف-تسريبات-جدة.",
+        "name": "slug",
+        "type": "string"
+      },
+      {
+        "description": "Optional override for link text. Defaults to the slug.",
+        "name": "label",
+        "type": "string"
+      },
+      {
+        "rows": 2,
+        "name": "description",
+        "type": "text",
+        "title": "Description (optional)"
+      }
+    ],
+    "name": "internalServiceLink",
+    "type": "object"
+  },
+  {
+    "fields": [
+      {
+        "initialValue": "الأسئلة الشائعة",
+        "name": "heading",
+        "type": "string",
+        "title": "Section Heading"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 2
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "question",
+                "type": "string"
+              },
+              {
+                "rows": 3,
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "answer",
+                "type": "text"
+              }
+            ],
+            "type": "object",
+            "name": "faqItem",
+            "title": "FAQ Item"
+          }
+        ],
+        "name": "items",
+        "type": "array",
+        "title": "FAQ Items"
+      }
+    ],
+    "name": "embeddedFaq",
+    "type": "object",
+    "title": "Embedded FAQ"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Step Name"
+      },
+      {
+        "rows": 3,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "text",
+        "type": "text",
+        "title": "Step Description"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Step Image (optional)"
+      }
+    ],
+    "name": "howToStep",
+    "type": "object",
+    "title": "How-To Step"
+  }
+]

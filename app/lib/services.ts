@@ -1422,6 +1422,29 @@ export const services: Service[] = [
   },
 ];
 
+// Where each service ranks/converts best — its natural working area. Nationwide
+// posts deep-link a service to these cities (vs. spraying all 10), concentrating
+// local-ranking signal where it matters. Editors can override per-post via
+// post.relatedCities. Client-confirmed areas are marked; the rest are sensible
+// defaults pending the client's input — update freely as coverage is confirmed.
+const SERVICE_PRIMARY_CITIES: Record<string, string[]> = {
+  // client-confirmed
+  سيراميك: ["medina", "khamis-mushait", "dammam", "jeddah"],
+  باركية: ["medina", "khamis-mushait", "dammam", "jeddah"],
+  عزل: ["mecca", "jeddah", "riyadh"],
+  "نقل-عفش": ["medina"],
+  // defaults (not yet confirmed by client)
+  سباكة: ["riyadh", "jeddah"],
+  تنظيف: ["riyadh", "jeddah"],
+  صيانة: ["riyadh", "dammam"],
+  "تنسيق-حدائق": ["riyadh", "abha"],
+  مقاولات: ["riyadh", "jeddah"],
+};
+
+export function getServicePrimaryCities(slug: string): string[] {
+  return SERVICE_PRIMARY_CITIES[slug] ?? ["riyadh", "jeddah"];
+}
+
 export function getService(slug: string): Service | undefined {
   return services.find((s) => s.slug === slug);
 }
