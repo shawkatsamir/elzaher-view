@@ -132,3 +132,106 @@ export const RELATED_POSTS_BY_SERVICE_AND_CITY_QUERY = groq`*[
   readTime,
   "category": categories[0]->{title, slug}
 }`;
+
+// ---- Projects (works / case studies) ----
+
+export const PROJECTS_QUERY = groq`*[_type == "project" && defined(slug.current)] | order(coalesce(completedAt, publishedAt) desc) {
+  _id,
+  title,
+  slug,
+  mainImage,
+  summary,
+  completedAt,
+  neighborhood,
+  clientType,
+  resultHighlight,
+  relatedServices,
+  relatedCities
+}`;
+
+export const PROJECT_QUERY = groq`*[_type == "project" && slug.current == $slug][0] {
+  _id,
+  _updatedAt,
+  title,
+  seoTitle,
+  slug,
+  mainImage,
+  ogImage,
+  gallery[]{ ..., alt, caption },
+  summary,
+  body,
+  tocAuto,
+  clientType,
+  neighborhood,
+  completedAt,
+  durationLabel,
+  materialsUsed,
+  resultHighlight,
+  testimonial,
+  postFaqs[]{ question, answer },
+  publishedAt,
+  lastReviewedAt,
+  "author": author->{
+    _id,
+    name,
+    slug,
+    role,
+    bio,
+    photo,
+    expertise,
+    yearsExperience
+  },
+  relatedServices,
+  relatedCities,
+  keywords,
+  metaDescription,
+  "relatedProjects": relatedProjects[]->{
+    _id,
+    title,
+    slug,
+    mainImage,
+    completedAt,
+    summary,
+    resultHighlight
+  },
+  "relatedPosts": relatedPosts[]->{
+    _id,
+    title,
+    slug,
+    mainImage,
+    publishedAt,
+    excerpt,
+    "category": categories[0]->{title, slug}
+  }
+}`;
+
+// Projects tagged with a given service (and optionally city) — for surfacing
+// case studies on service landing pages (phase 2).
+export const RELATED_PROJECTS_BY_SERVICE_QUERY = groq`*[
+  _type == "project"
+  && defined(slug.current)
+  && $serviceSlug in relatedServices
+] | order(coalesce(completedAt, publishedAt) desc) [0...3] {
+  _id,
+  title,
+  slug,
+  mainImage,
+  completedAt,
+  resultHighlight,
+  neighborhood
+}`;
+
+export const RELATED_PROJECTS_BY_SERVICE_AND_CITY_QUERY = groq`*[
+  _type == "project"
+  && defined(slug.current)
+  && $serviceSlug in relatedServices
+  && $citySlug in relatedCities
+] | order(coalesce(completedAt, publishedAt) desc) [0...3] {
+  _id,
+  title,
+  slug,
+  mainImage,
+  completedAt,
+  resultHighlight,
+  neighborhood
+}`;

@@ -20,6 +20,11 @@ interface SanityCategory {
   _updatedAt: string;
 }
 
+interface SanityProject {
+  slug: string;
+  _updatedAt: string;
+}
+
 // Per Google's localized-versions doc:
 // https://developers.google.com/search/docs/specialty/international/localized-versions
 // Each URL gets a self-referencing `ar-SA` + `x-default` alternate. Next.js
@@ -40,6 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const home = `${baseUrl}`;
   const blogIndex = `${baseUrl}/blog`;
+  const worksIndex = `${baseUrl}/works`;
   const siteMapPage = `${baseUrl}/${SITEMAP_PAGE_SLUG}`;
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -56,6 +62,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.8,
       alternates: withLocaleAlternates(blogIndex),
+    },
+    {
+      url: worksIndex,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+      alternates: withLocaleAlternates(worksIndex),
     },
     {
       url: siteMapPage,
@@ -119,6 +132,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
 
   let blogRoutes: MetadataRoute.Sitemap = [];
+  let projectRoutes: MetadataRoute.Sitemap = [];
   try {
     const postsQuery = `*[_type == "post"] {
       "slug": slug.current,
@@ -129,11 +143,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       "slug": slug.current,
       _updatedAt
     }`;
+    const projectsQuery = `*[_type == "project" && defined(slug.current)] {
+      "slug": slug.current,
+      _updatedAt
+    }`;
 
-    const [posts, categories] = await Promise.all([
+    const [posts, categories, projects] = await Promise.all([
       client.fetch<SanityPost[]>(postsQuery),
       client.fetch<SanityCategory[]>(categoriesQuery),
+      client.fetch<SanityProject[]>(projectsQuery),
     ]);
+
+    projectRoutes = projects.map((p) => {
+      const url = `${baseUrl}/works/${p.slug}`;
+      return {
+        url,
+        lastModified: new Date(p._updatedAt),
+        changeFrequency: "monthly",
+        priority: 0.7,
+        alternates: withLocaleAlternates(url),
+      };
+    });
 
     const categoryRoutes: MetadataRoute.Sitemap = categories.map((c) => {
       const url = `${baseUrl}/blog/${c.slug}`;
@@ -161,8 +191,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     blogRoutes = [...categoryRoutes, ...postRoutes];
   } catch {
-    // If Sanity is unreachable at build time, ship without blog routes.
+    // If Sanity is unreachable at build time, ship without blog/project routes.
     blogRoutes = [];
+    projectRoutes = [];
   }
 
   return [
@@ -172,5 +203,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...subServiceHubRoutes,
     ...subServiceCityRoutes,
     ...blogRoutes,
+    ...projectRoutes,
   ];
 }
