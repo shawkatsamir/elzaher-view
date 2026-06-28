@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Tajawal } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import Breadcrumbs from "@/components/BreadCrumbs";
@@ -85,6 +86,7 @@ export default function RootLayout({
         </main>
         <Footer />
         <StickyContactButons />
+        {isProduction && <GoogleAnalytics gaId="G-M4EV5GJQ03" />}
       </body>
     </html>
   );

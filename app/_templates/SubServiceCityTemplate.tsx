@@ -283,6 +283,38 @@ export default function SubServiceCityTemplate({
         </section>
       )}
 
+      {/* Related links — funnel equity up to the hub aggregators */}
+      <section className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-gray-900">روابط ذات صلة</h2>
+          </div>
+          <div className="mx-auto grid max-w-3xl grid-cols-1 gap-4 md:grid-cols-3">
+            <Card className="hover:shadow-lg">
+              <Link href={`/${subService.slug}`}>
+                <CardContent className="p-5 text-center font-semibold text-gray-900">
+                  {subService.titleAr} في جميع مدن المملكة
+                </CardContent>
+              </Link>
+            </Card>
+            <Card className="hover:shadow-lg">
+              <Link href={`/${buildServiceCitySlug(service, city)}`}>
+                <CardContent className="p-5 text-center font-semibold text-gray-900">
+                  جميع خدمات {service.titleAr} في {city.nameAr}
+                </CardContent>
+              </Link>
+            </Card>
+            <Card className="hover:shadow-lg">
+              <Link href={`/${service.hubSlug}`}>
+                <CardContent className="p-5 text-center font-semibold text-gray-900">
+                  {service.hubTitleAr}
+                </CardContent>
+              </Link>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       <CtaSection
         title={`${subService.titleAr} في ${city.nameAr}`}
         subtitle={`اتصل بنا الآن ${business.phoneDisplay} وفريقنا في طريقه إليك`}

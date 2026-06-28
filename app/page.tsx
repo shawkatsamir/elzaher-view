@@ -25,6 +25,9 @@ import {
   MapPin,
 } from "lucide-react";
 import OrganizationJsonLd from "./_components/OrganizationJsonLd";
+import { cities } from "@/app/lib/locations";
+import { getService } from "@/app/lib/services";
+import { buildServiceCitySlug } from "@/app/lib/slug-registry";
 
 export const metadata: Metadata = {
   title: "شركة الزاهر فيو | خدمات منزلية شاملة في الرياض، جدة، والدمام",
@@ -75,7 +78,7 @@ export default function HomePage() {
       description:
         "تنظيف شامل للمنازل والمكاتب والفلل مع استخدام أحدث المعدات والمنظفات الآمنة",
       image: "/images/services/cleaning.jpeg",
-      link: "/services/cleaning",
+      link: "/شركة-تنظيف",
       icon: <Sparkles className="h-6 w-6" />,
       features: [
         "تنظيف المنازل والفلل",
@@ -90,7 +93,7 @@ export default function HomePage() {
       description:
         "صيانة وإصلاح جميع الأجهزة المنزلية والكهربائية والتكييف بأيدي خبراء متخصصين",
       image: "/images/services/cleaning.jpeg",
-      link: "/services/maintenance",
+      link: "/شركة-صيانة",
       icon: <Wrench className="h-6 w-6" />,
       features: [
         "صيانة أجهزة التكييف",
@@ -105,7 +108,7 @@ export default function HomePage() {
       description:
         "كشف وإصلاح تسريبات المياه وتسليك البالوعات بأحدث الأجهزة والتقنيات المتطورة",
       image: "/images/services/plumbing.jpeg",
-      link: "/services/plumbing",
+      link: "/شركة-سباكة",
       icon: <Droplets className="h-6 w-6" />,
       features: [
         "كشف التسريبات بدون تكسير",
@@ -120,7 +123,7 @@ export default function HomePage() {
       description:
         "تصميم وتنسيق الحدائق وصيانة المساحات الخضراء بلمسة احترافية جميلة",
       image: "/images/services/gardening.jpeg",
-      link: "/services/landscaping",
+      link: "/شركة-تنسيق-حدائق",
       icon: <Trees className="h-6 w-6" />,
       features: [
         "تصميم الحدائق والمناظر",
@@ -135,7 +138,7 @@ export default function HomePage() {
       description:
         "مقاولات عامة للبناء والترميم والتشطيبات بأعلى معايير الجودة والإتقان",
       image: "/images/services/Contracting.jpeg",
-      link: "/services/contracting",
+      link: "/شركة-مقاولات",
       icon: <Building className="h-6 w-6" />,
       features: [
         "بناء المنازل والفلل",
@@ -150,7 +153,7 @@ export default function HomePage() {
       description:
         "نقل الأثاث والعفش بأمان تام مع التغليف المتخصص وفريق محترف للنقل",
       image: "/images/services/cleaning.jpeg",
-      link: "/services/fernature",
+      link: "/شركة-نقل-عفش",
       icon: <Truck className="h-6 w-6" />,
       features: [
         "تغليف الأثاث المتخصص",
@@ -165,7 +168,7 @@ export default function HomePage() {
       description:
         "عزل الأسطح والخزانات والحمامات بأحدث التقنيات والمواد العازلة عالية الجودة",
       image: "/images/services/plumbing.jpeg",
-      link: "/services/insulation",
+      link: "/شركة-عزل",
       icon: <Shield className="h-6 w-6" />,
       features: [
         "عزل الأسطح المائي والحراري",
@@ -269,18 +272,9 @@ export default function HomePage() {
     },
   ];
 
-  const serviceAreas = [
-    "الرياض",
-    "جدة",
-    "الدمام",
-    "مكة المكرمة",
-    "المدينة المنورة",
-    "الطائف",
-    "أبها",
-    "تبوك",
-    "بريدة",
-    "خميس مشيط",
-  ];
+  // Flagship service used to give each city tile a real destination in the
+  // city cluster (no standalone city hub exists yet).
+  const cleaning = getService("تنظيف")!;
 
   return (
     <div className="min-h-screen">
@@ -404,14 +398,17 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
-            {serviceAreas.map((area, index) => (
-              <div
-                key={index}
+            {cities.map((city) => (
+              <Link
+                key={city.slug}
+                href={`/${buildServiceCitySlug(cleaning, city)}`}
                 className="flex items-center justify-center rounded-lg border border-gray-100 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"
               >
                 <MapPin className="ml-2 h-5 w-5 text-primary" />
-                <span className="font-semibold text-gray-800">{area}</span>
-              </div>
+                <span className="font-semibold text-gray-800">
+                  {city.nameAr}
+                </span>
+              </Link>
             ))}
           </div>
         </div>
