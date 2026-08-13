@@ -29,4 +29,9 @@ next-env.d.ts
 
 .unlighthouse
 
+# Local agent plan/scratch notes stay out of the repo; project docs and
+# Claude Code skills are tracked.
 *.md
+!README.md
+!CLAUDE.md
+!.claude/**/*.md
