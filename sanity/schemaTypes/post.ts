@@ -1,4 +1,22 @@
 import { defineType, defineField } from "sanity";
+import { services } from "../../app/lib/services";
+import { cities } from "../../app/lib/locations";
+
+const serviceSlugs = services.map((s) => s.slug);
+const citySlugs = cities.map((c) => c.slug);
+
+// Both fields are free-text tag inputs whose values are matched against the slug
+// registry at render time, so a typo fails silently instead of erroring. Guard them.
+function validateSlugs(
+  value: unknown,
+  allowed: string[],
+  hint: string,
+): true | string {
+  if (!Array.isArray(value)) return true;
+  const unknown = value.filter((v) => !allowed.includes(v as string));
+  if (unknown.length === 0) return true;
+  return `${hint} القيم غير المعروفة: «${unknown.join("»، «")}».`;
+}
 
 // Count words in a Portable Text body. Used by validation + word-count helper.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -204,6 +222,14 @@ export default defineType({
       group: "relations",
       of: [{ type: "string" }],
       options: { layout: "tags" },
+      validation: (Rule) =>
+        Rule.custom((value) =>
+          validateSlugs(
+            value,
+            serviceSlugs,
+            `استخدم مُعرّف الخدمة كما هو في services.ts (${serviceSlugs.join("، ")}).`,
+          ),
+        ),
     }),
     defineField({
       name: "relatedCities",
@@ -214,6 +240,14 @@ export default defineType({
       of: [{ type: "string" }],
       options: { layout: "tags" },
       group: "relations",
+      validation: (Rule) =>
+        Rule.custom((value) =>
+          validateSlugs(
+            value,
+            citySlugs,
+            "استخدم المُعرّف الإنجليزي للمدينة (riyadh، jeddah، …) وليس الاسم العربي.",
+          ),
+        ),
     }),
     defineField({
       name: "author",

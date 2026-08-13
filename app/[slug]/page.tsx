@@ -48,8 +48,10 @@ function descriptorMeta(d: PageDescriptor): {
     }
     case "service-city": {
       return {
-        title: `${d.service.hubTitleAr} في ${d.city.nameAr} | ${d.service.titleAr} ${d.city.nameAr}`,
-        description: `أفضل ${d.service.titleAr} في ${d.city.nameAr}. ${d.service.shortDescriptionAr} خدمة 24/7 في ${d.city.nameAr} وضواحيها.`,
+        // The old title repeated service+city twice and truncated in the SERP.
+        // Second half is now a differentiator, which is what earns the click.
+        title: `${d.service.hubTitleAr} في ${d.city.nameAr} | معاينة مجانية وضمان`,
+        description: `${d.service.shortDescriptionAr} نغطي جميع أحياء ${d.city.nameAr} وضواحيها، خدمة 24/7 مع معاينة مجانية وضمان على التنفيذ.`,
         keywords: [
           `${d.service.titleAr} ${d.city.nameAr}`,
           `${d.service.hubTitleAr} ${d.city.nameAr}`,

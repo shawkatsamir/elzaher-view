@@ -32,6 +32,10 @@ export interface Service {
   citySlugPrefix: string;
   titleAr: string;
   hubTitleAr: string;
+  // Heading used on service×city pages. Lets the H1 carry the same head term as the
+  // URL and <title> (e.g. "معلم تركيب باركية") instead of the generic service name.
+  // Falls back to titleAr where the persona wording would read badly.
+  cityHeadingAr?: string;
   shortDescriptionAr: string;
   longDescriptionAr: string;
   iconName: string;
@@ -229,6 +233,7 @@ export const services: Service[] = [
     citySlugPrefix: "تنظيف",
     titleAr: "خدمات التنظيف",
     hubTitleAr: "شركة تنظيف منازل وفلل",
+    cityHeadingAr: "شركة تنظيف منازل وفلل",
     shortDescriptionAr:
       "خدمات تنظيف شاملة للمنازل والفلل والشقق بأحدث المعدات ومواد التنظيف الآمنة.",
     longDescriptionAr:
@@ -1094,6 +1099,7 @@ export const services: Service[] = [
     citySlugPrefix: "معلم-تركيب-باركية",
     titleAr: "خدمات تركيب باركية",
     hubTitleAr: "معلم تركيب باركية",
+    cityHeadingAr: "معلم تركيب باركية",
     shortDescriptionAr:
       "معلم تركيب باركية محترف لجميع أنواع الباركية: الخشب الطبيعي، الباركية المهندس، والفينيل SPC وLVT بأيدي حرفيين متمرسين.",
     longDescriptionAr:
@@ -1262,6 +1268,7 @@ export const services: Service[] = [
     citySlugPrefix: "معلم-تركيب-سيراميك",
     titleAr: "خدمات تركيب السيراميك والبلاط",
     hubTitleAr: "معلم تركيب سيراميك",
+    cityHeadingAr: "معلم تركيب سيراميك",
     shortDescriptionAr:
       "معلم تركيب سيراميك وبلاط محترف للأرضيات والجدران والحمامات والمطابخ، بأحدث تقنيات القص بالليزر والتركيب بدون فواصل.",
     longDescriptionAr:
