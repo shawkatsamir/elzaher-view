@@ -105,7 +105,7 @@ export default function ServiceCityTemplate({
                 {service.titleAr} في {city.nameAr}
               </Badge>
               <h1 className="mb-6 text-4xl font-bold text-gray-900 lg:text-5xl">
-                أفضل {service.titleAr} في {city.nameAr}
+                أفضل {service.cityHeadingAr ?? service.titleAr} في {city.nameAr}
               </h1>
               <p className="mb-8 text-lg leading-relaxed text-gray-600">
                 {cityContent?.intro ??
