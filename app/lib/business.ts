@@ -1,15 +1,17 @@
 // Single source of truth for client NAP (Name, Address, Phone) and brand data.
-// Replace every TODO(NAP) before going to production — structured data with placeholder data is a Google-trust risk.
+// Replace every remaining TODO(NAP) before going to production — structured data
+// with placeholder data is a Google-trust risk. Name, address and phone are now
+// the client's real values and must stay identical to the Google Business Profile.
 
 export const business = {
   baseUrl: "https://alzaherview.com",
   nameAr: "شركة الزاهر فيو",
   nameEn: "Al-Zaher View",
   legalName: "شركة الزاهر فيو",
-  // TODO(NAP): replace with the client's real phone number once supplied
+  // Confirmed real: the client's number, and the one behind every call CTA.
   phone: "+966590123782",
   phoneDisplay: "0590123782",
-  // TODO(NAP): replace with the client's real WhatsApp number once supplied
+  // Same line as `phone`, in the international format wa.me requires.
   whatsapp: "966590123782",
   // TODO(NAP): replace with the client's real email once supplied
   email: "info@alzaherview.com",
