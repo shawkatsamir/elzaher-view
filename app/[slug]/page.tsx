@@ -12,10 +12,13 @@ import SubServiceHubTemplate from "@/app/_templates/SubServiceHubTemplate";
 import SubServiceCityTemplate from "@/app/_templates/SubServiceCityTemplate";
 import SitemapPageTemplate from "@/app/_templates/SitemapPageTemplate";
 import type { RelatedPost } from "@/app/_templates/RelatedPostsSection";
+import type { RelatedProject } from "@/app/_templates/RelatedProjectsSection";
 import { client } from "@/sanity/client";
 import {
   RELATED_POSTS_BY_SERVICE_QUERY,
   RELATED_POSTS_BY_SERVICE_AND_CITY_QUERY,
+  RELATED_PROJECTS_BY_SERVICE_QUERY,
+  RELATED_PROJECTS_BY_SERVICE_AND_CITY_QUERY,
 } from "@/sanity/lib/queries";
 
 export const dynamicParams = false;
@@ -51,7 +54,7 @@ function descriptorMeta(d: PageDescriptor): {
         // The old title repeated service+city twice and truncated in the SERP.
         // Second half is now a differentiator, which is what earns the click.
         title: `${d.service.hubTitleAr} في ${d.city.nameAr} | معاينة مجانية وضمان`,
-        description: `${d.service.shortDescriptionAr} نغطي جميع أحياء ${d.city.nameAr} وضواحيها، خدمة 24/7 مع معاينة مجانية وضمان على التنفيذ.`,
+        description: `${d.service.shortDescriptionAr} نغطي جميع أحياء ${d.city.nameAr} وضواحيها، ${d.service.availability.badgeAr} مع معاينة مجانية وضمان على التنفيذ.`,
         keywords: [
           `${d.service.titleAr} ${d.city.nameAr}`,
           `${d.service.hubTitleAr} ${d.city.nameAr}`,
@@ -63,11 +66,17 @@ function descriptorMeta(d: PageDescriptor): {
         canonicalPath: `/${d.slug}`,
       };
     }
+    // Sub-service titles deliberately omit the parent's hubTitleAr. Appending it put
+    // the parent's head term ("معلم تركيب سيراميك") in the title of every sub-service
+    // page, so four URLs competed for one query. Each sub-service now owns its own
+    // head term and links up to the service×city page instead.
     case "sub-service-hub": {
+      const head = d.subService.titleShortAr ?? d.subService.titleAr;
       return {
-        title: `${d.subService.titleAr} - ${d.service.hubTitleAr}`,
+        title: `${head} | أسعار ومواصفات التنفيذ`,
         description: d.subService.shortAr,
         keywords: [
+          head,
           d.subService.titleAr,
           ...d.subService.techniques.slice(0, 3),
           d.service.titleAr,
@@ -77,13 +86,14 @@ function descriptorMeta(d: PageDescriptor): {
       };
     }
     case "sub-service-city": {
+      const head = d.subService.titleShortAr ?? d.subService.titleAr;
       return {
-        title: `${d.subService.titleAr} في ${d.city.nameAr} - ${d.service.hubTitleAr}`,
-        description: `${d.subService.shortAr} في ${d.city.nameAr}. خدمة محلية متخصصة وفريق متاح على مدار الساعة.`,
+        title: `${head} في ${d.city.nameAr} | أسعار ومدة التنفيذ`,
+        description: `${d.subService.shortAr} في ${d.city.nameAr}. أسعار المتر، مدة التنفيذ، والمواد المستخدمة.`,
         keywords: [
+          `${head} ${d.city.nameAr}`,
+          `${head} في ${d.city.nameAr}`,
           `${d.subService.titleAr} ${d.city.nameAr}`,
-          `${d.subService.titleAr} في ${d.city.nameAr}`,
-          `${d.service.titleAr} ${d.city.nameAr}`,
           ...d.city.keywords,
         ],
         image: d.subService.heroImage,
@@ -163,6 +173,28 @@ async function fetchRelatedPosts(
   }
 }
 
+// Same city-first, service-wide fallback as fetchRelatedPosts: a case study from the
+// searcher's own city is the strongest proof, but any case study for the service beats
+// an empty section.
+async function fetchRelatedProjects(
+  serviceSlug: string,
+  citySlug: string,
+): Promise<RelatedProject[]> {
+  try {
+    const cityScoped = await client.fetch<RelatedProject[]>(
+      RELATED_PROJECTS_BY_SERVICE_AND_CITY_QUERY,
+      { serviceSlug, citySlug },
+    );
+    if (cityScoped && cityScoped.length > 0) return cityScoped;
+    return await client.fetch<RelatedProject[]>(
+      RELATED_PROJECTS_BY_SERVICE_QUERY,
+      { serviceSlug },
+    );
+  } catch {
+    return [];
+  }
+}
+
 export default async function DynamicSlugPage({
   params,
 }: {
@@ -183,15 +215,16 @@ export default async function DynamicSlugPage({
       );
     }
     case "service-city": {
-      const relatedPosts = await fetchRelatedPosts(
-        descriptor.service.slug,
-        descriptor.city.slug,
-      );
+      const [relatedPosts, relatedProjects] = await Promise.all([
+        fetchRelatedPosts(descriptor.service.slug, descriptor.city.slug),
+        fetchRelatedProjects(descriptor.service.slug, descriptor.city.slug),
+      ]);
       return (
         <ServiceCityTemplate
           service={descriptor.service}
           city={descriptor.city}
           relatedPosts={relatedPosts}
+          relatedProjects={relatedProjects}
         />
       );
     }

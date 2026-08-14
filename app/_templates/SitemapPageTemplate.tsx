@@ -96,7 +96,7 @@ export default function SitemapPageTemplate() {
                         href={`/${sub.slug}`}
                         className="font-semibold text-blue-700 hover:underline"
                       >
-                        {sub.titleAr}
+                        {sub.titleShortAr ?? sub.titleAr}
                       </Link>
                       <ul className="mt-1 grid grid-cols-2 gap-x-3 gap-y-0.5 pr-3 text-xs text-gray-600">
                         {cities.map((city) => (
@@ -105,7 +105,7 @@ export default function SitemapPageTemplate() {
                               href={`/${buildSubServiceCitySlug(sub, city)}`}
                               className="hover:text-blue-700 hover:underline"
                             >
-                              {sub.titleAr} {city.nameAr}
+                              {sub.titleShortAr ?? sub.titleAr} {city.nameAr}
                             </Link>
                           </li>
                         ))}

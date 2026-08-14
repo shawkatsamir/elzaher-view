@@ -112,7 +112,11 @@ export default function ServiceHubTemplate({
             <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-4">
               {[
                 { icon: Shield, title: "ضمان شامل", desc: "ضمان حقيقي على العمل والمواد" },
-                { icon: Clock, title: "خدمة 24/7", desc: "متاحون على مدار الساعة للطوارئ" },
+                {
+                  icon: Clock,
+                  title: service.availability.badgeAr,
+                  desc: service.availability.noteAr,
+                },
                 { icon: Users, title: "فنيون خبراء", desc: "فريق متخصص بخبرة عملية طويلة" },
                 { icon: Award, title: "جودة معتمدة", desc: "نلتزم بالمعايير السعودية" },
               ].map((f, i) => {
@@ -151,7 +155,7 @@ export default function ServiceHubTemplate({
             {service.subServices.map((sub) => (
               <Link key={sub.slug} href={`/${sub.slug}`} className="block">
                 <SubServiceCard
-                  title={sub.titleAr}
+                  title={sub.titleShortAr ?? sub.titleAr}
                   subtitle={sub.shortAr}
                   features={sub.techniques.slice(0, 4)}
                   image={sub.heroImage}

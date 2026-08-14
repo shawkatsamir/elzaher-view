@@ -1,4 +1,4 @@
-import { business, absoluteUrl } from "@/app/lib/business";
+import { business, absoluteUrl, postalAddress } from "@/app/lib/business";
 import type { City } from "@/app/lib/locations";
 
 interface LocalBusinessJsonLdProps {
@@ -28,14 +28,7 @@ export default function LocalBusinessJsonLd({
     // One business, one address — on every page. City coverage is expressed via
     // areaServed, never by relocating the address, which would assert a physical
     // branch per city and break NAP consistency against the Google Business Profile.
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: business.address.streetEn,
-      addressLocality: business.address.cityEn,
-      addressRegion: business.address.regionEn,
-      postalCode: business.address.postalCode,
-      addressCountry: business.address.country,
-    },
+    address: postalAddress(),
     areaServed: city
       ? { "@type": "City", name: city.nameAr }
       : { "@type": "Country", name: "Saudi Arabia" },
@@ -56,12 +49,18 @@ export default function LocalBusinessJsonLd({
       business.social.tiktok,
       business.social.youtube,
     ].filter(Boolean),
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: business.openingHours.days,
-      opens: business.openingHours.opens,
-      closes: business.openingHours.closes,
-    },
+    // Only emitted once real hours are known. Asserting 00:00–23:59 claims a 24h
+    // operation we cannot back, and would contradict the GBP hours if they differ.
+    ...(business.openingHours
+      ? {
+          openingHoursSpecification: {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: business.openingHours.days,
+            opens: business.openingHours.opens,
+            closes: business.openingHours.closes,
+          },
+        }
+      : {}),
   };
 
   return (

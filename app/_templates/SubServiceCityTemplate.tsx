@@ -46,7 +46,7 @@ function buildSubServiceCityFaqs(
   return [
     ...(subContent?.subServiceCityFaqs ?? []),
     {
-      question: `هل تقدمون خدمة ${subService.titleAr} في جميع أحياء ${city.nameAr}؟`,
+      question: `هل تقدمون خدمة ${subService.titleShortAr ?? subService.titleAr} في جميع أحياء ${city.nameAr}؟`,
       answer: `نعم، فرقنا تغطي جميع أحياء ${city.nameAr} بما فيها ${city.neighborhoods.slice(0, 4).join("، ")}، ونصل إليكم في أسرع وقت.`,
     },
     ...(cityFaq ? [cityFaq] : []),
@@ -65,6 +65,9 @@ export default function SubServiceCityTemplate({
   const t = themes[service.colorTheme];
   const slug = buildSubServiceCitySlug(subService, city);
   const pageUrl = `/${slug}`;
+  // The page's own head term. Kept distinct from service.cityHeadingAr so this page
+  // and the service×city page target different queries instead of competing.
+  const head = subService.titleShortAr ?? subService.titleAr;
   const faqs = buildSubServiceCityFaqs(service, subService, city);
   const nearbyCities = getNearbyCities(city.slug);
   const cityContent = getCityServiceContent(city.slug, service.slug);
@@ -77,7 +80,7 @@ export default function SubServiceCityTemplate({
   return (
     <main className="flex-1">
       <ServiceJsonLd
-        name={`${subService.titleAr} في ${city.nameAr}`}
+        name={`${head} في ${city.nameAr}`}
         description={`${subService.shortAr} في ${city.nameAr}.`}
         image={subService.heroImage}
         url={pageUrl}
@@ -86,7 +89,7 @@ export default function SubServiceCityTemplate({
       <LocalBusinessJsonLd
         city={city}
         pageUrl={pageUrl}
-        description={`${subService.titleAr} في ${city.nameAr} — ${subService.shortAr}`}
+        description={`${head} في ${city.nameAr} — ${subService.shortAr}`}
       />
       <FaqJsonLd faqs={faqs} />
       <BreadcrumbJsonLd
@@ -94,10 +97,10 @@ export default function SubServiceCityTemplate({
           { name: "الرئيسية", path: "/" },
           { name: service.hubTitleAr, path: `/${service.hubSlug}` },
           {
-            name: `${service.titleAr} في ${city.nameAr}`,
+            name: `${service.cityHeadingAr ?? service.titleAr} في ${city.nameAr}`,
             path: `/${buildServiceCitySlug(service, city)}`,
           },
-          { name: subService.titleAr, path: pageUrl },
+          { name: head, path: pageUrl },
         ]}
       />
 
@@ -112,14 +115,14 @@ export default function SubServiceCityTemplate({
                 variant="secondary"
                 className={`mb-4 ${t.badgeBg} ${t.badgeText}`}
               >
-                {subService.titleAr} • {city.nameAr}
+                {head} • {city.nameAr}
               </Badge>
               <h1 className="mb-6 text-4xl font-bold text-gray-900 lg:text-5xl">
-                {subService.titleAr} في {city.nameAr}
+                {head} في {city.nameAr}
               </h1>
               <p className="mb-8 text-lg leading-relaxed text-gray-600">
                 {subContent?.cityAdaptedIntro ??
-                  `${subService.longAr} نخدم سكان ${city.nameAr} وضواحيها على مدار الساعة.`}
+                  `${subService.longAr} نخدم سكان ${city.nameAr} وضواحيها. ${service.availability.noteAr}`}
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Button
@@ -138,7 +141,7 @@ export default function SubServiceCityTemplate({
               <div className="overflow-hidden rounded-2xl shadow-2xl">
                 <Img
                   src={subService.heroImage}
-                  alt={`${subService.titleAr} في ${city.nameAr}`}
+                  alt={`${head} في ${city.nameAr}`}
                   className="h-[400px] w-full object-cover"
                   fetchPriority="high"
                   loading="eager"
@@ -155,7 +158,7 @@ export default function SubServiceCityTemplate({
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl">
             <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">
-              كيف ننفذ {subService.titleAr} في {city.nameAr}
+              كيف ننفذ {head} في {city.nameAr}
             </h2>
             {subContent?.techniquesNote && (
               <p className="mb-8 text-lg leading-relaxed text-gray-700">
@@ -184,7 +187,7 @@ export default function SubServiceCityTemplate({
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-4xl">
               <h2 className="mb-6 text-3xl font-bold text-gray-900">
-                أسعار وتوفر {subService.titleAr} في {city.nameAr}
+                أسعار وتوفر {head} في {city.nameAr}
               </h2>
               <p className="text-lg leading-relaxed text-gray-700">
                 {subContent.pricingNote}
@@ -199,7 +202,7 @@ export default function SubServiceCityTemplate({
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl">
             <h2 className="mb-6 text-3xl font-bold">
-              لماذا تختلف {subService.titleAr} في {city.nameAr}؟
+              لماذا تختلف {head} في {city.nameAr}؟
             </h2>
             <p className={`text-lg leading-relaxed ${t.outlineText}`}>
               {cityContent?.challenges ?? city.localContext}
@@ -217,7 +220,7 @@ export default function SubServiceCityTemplate({
       </section>
 
       <FaqSection
-        title={`الأسئلة الشائعة حول ${subService.titleAr} في ${city.nameAr}`}
+        title={`الأسئلة الشائعة حول ${head} في ${city.nameAr}`}
         items={faqs}
       />
 
@@ -251,7 +254,7 @@ export default function SubServiceCityTemplate({
       {relatedPosts && relatedPosts.length > 0 && (
         <RelatedPostsSection
           posts={relatedPosts}
-          title={`مقالات عن ${subService.titleAr} في ${city.nameAr}`}
+          title={`مقالات عن ${head} في ${city.nameAr}`}
           subtitle="نصائح يجب معرفتها"
         />
       )}
@@ -262,7 +265,7 @@ export default function SubServiceCityTemplate({
           <div className="container mx-auto px-4">
             <div className="mb-12 text-center">
               <h2 className="mb-4 text-3xl font-bold text-gray-900">
-                {subService.titleAr} في مدن قريبة
+                {head} في مدن قريبة
               </h2>
             </div>
             <div className="mx-auto grid max-w-3xl grid-cols-2 gap-4 md:grid-cols-3">
@@ -272,7 +275,7 @@ export default function SubServiceCityTemplate({
                     <CardContent className="flex items-center gap-3 p-4">
                       <MapPin className={`h-5 w-5 ${t.iconText}`} />
                       <span className="font-semibold text-gray-900">
-                        {subService.titleAr} {c.nameAr}
+                        {head} {c.nameAr}
                       </span>
                     </CardContent>
                   </Link>
@@ -293,14 +296,15 @@ export default function SubServiceCityTemplate({
             <Card className="hover:shadow-lg">
               <Link href={`/${subService.slug}`}>
                 <CardContent className="p-5 text-center font-semibold text-gray-900">
-                  {subService.titleAr} في جميع مدن المملكة
+                  {head} في جميع مدن المملكة
                 </CardContent>
               </Link>
             </Card>
+            {/* Keyword-carrying anchor into the page that owns the معلم query. */}
             <Card className="hover:shadow-lg">
               <Link href={`/${buildServiceCitySlug(service, city)}`}>
                 <CardContent className="p-5 text-center font-semibold text-gray-900">
-                  جميع خدمات {service.titleAr} في {city.nameAr}
+                  {service.cityHeadingAr ?? service.titleAr} في {city.nameAr}
                 </CardContent>
               </Link>
             </Card>
@@ -316,7 +320,7 @@ export default function SubServiceCityTemplate({
       </section>
 
       <CtaSection
-        title={`${subService.titleAr} في ${city.nameAr}`}
+        title={`${head} في ${city.nameAr}`}
         subtitle={`اتصل بنا الآن ${business.phoneDisplay} وفريقنا في طريقه إليك`}
         theme={service.colorTheme}
       />

@@ -1,4 +1,4 @@
-import { business, absoluteUrl } from "@/app/lib/business";
+import { business, absoluteUrl, postalAddress } from "@/app/lib/business";
 
 interface ServiceJsonLdProps {
   name: string;
@@ -30,14 +30,7 @@ export default function ServiceJsonLd({
       name: business.nameAr,
       image: absoluteUrl(business.defaultLogoPath),
       telephone: business.phone,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: business.address.streetEn,
-        addressLocality: business.address.cityEn,
-        addressRegion: business.address.regionEn,
-        postalCode: business.address.postalCode,
-        addressCountry: business.address.country,
-      },
+      address: postalAddress(),
     },
     areaServed: areaServedAr
       ? { "@type": "City", name: areaServedAr }
