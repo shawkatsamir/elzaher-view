@@ -1,4 +1,4 @@
-import { business, absoluteUrl } from "@/app/lib/business";
+import { business, absoluteUrl, postalAddress } from "@/app/lib/business";
 
 export default function OrganizationJsonLd() {
   const schema = {
@@ -10,14 +10,7 @@ export default function OrganizationJsonLd() {
     logo: absoluteUrl(business.defaultLogoPath),
     description:
       "نقدم خدمات منزلية شاملة في جميع مدن المملكة العربية السعودية بأعلى جودة وأفضل الأسعار: سباكة، تنظيف، صيانة، عزل، تنسيق حدائق، نقل عفش، ومقاولات عامة.",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: business.address.streetEn,
-      addressLocality: business.address.cityEn,
-      addressRegion: business.address.regionEn,
-      postalCode: business.address.postalCode,
-      addressCountry: business.address.country,
-    },
+    address: postalAddress(),
     contactPoint: {
       "@type": "ContactPoint",
       telephone: business.phone,
@@ -25,7 +18,10 @@ export default function OrganizationJsonLd() {
       areaServed: business.address.country,
       availableLanguage: ["ar", "en"],
     },
+    // GBP first, then socials — same ordering and empty-filtering as
+    // LocalBusinessJsonLd, so the two never disagree about the entity.
     sameAs: [
+      business.googleBusinessProfileUrl,
       business.social.twitter,
       business.social.instagram,
       business.social.facebook,
@@ -33,12 +29,16 @@ export default function OrganizationJsonLd() {
       business.social.youtube,
     ].filter(Boolean),
     priceRange: business.priceRange,
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: business.openingHours.days,
-      opens: business.openingHours.opens,
-      closes: business.openingHours.closes,
-    },
+    ...(business.openingHours
+      ? {
+          openingHoursSpecification: {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: business.openingHours.days,
+            opens: business.openingHours.opens,
+            closes: business.openingHours.closes,
+          },
+        }
+      : {}),
   };
 
   return (

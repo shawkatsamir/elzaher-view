@@ -8,6 +8,12 @@ export interface FaqItem {
 export interface SubService {
   slug: string;
   titleAr: string;
+  // Short head term for the <title> and H1 of sub-service pages. Descriptive
+  // titleAr values ("تركيب بلاط وسيراميك للأرضيات والحوائط") truncate in the Arabic
+  // SERP, and pairing them with the parent's "معلم …" branding made the sub-service
+  // pages compete with the service×city page for the same معلم query. Set this on
+  // any service whose sub-services would otherwise cannibalise the parent.
+  titleShortAr?: string;
   shortAr: string;
   longAr: string;
   techniques: string[];
@@ -36,8 +42,27 @@ export interface Service {
   // URL and <title> (e.g. "معلم تركيب باركية") instead of the generic service name.
   // Falls back to titleAr where the persona wording would read badly.
   cityHeadingAr?: string;
+  // How this service is actually available. The site used to assert 24/7 emergency
+  // cover on all nine services; that is true for plumbing and electrical and false
+  // for tiling and parquet, where the work is scheduled and takes days. Each service
+  // states what it can back.
+  availability: {
+    // Short badge line: 3–5 words.
+    badgeAr: string;
+    // One sentence, used in body copy and meta descriptions.
+    noteAr: string;
+    // Answer to the "are you available around the clock?" hub FAQ.
+    faqAnswerAr: string;
+  };
   shortDescriptionAr: string;
   longDescriptionAr: string;
+  // How the job actually runs, start to finish, plus the warranty that backs it.
+  // Rendered on service×city pages. Set on the "معلم" services, where the searcher is
+  // vetting a craftsman and wants mechanics rather than adjectives.
+  process?: {
+    steps: { titleAr: string; bodyAr: string }[];
+    warrantyAr: string;
+  };
   iconName: string;
   colorTheme: ColorTheme;
   subServices: SubService[];
@@ -45,15 +70,37 @@ export interface Service {
   hubFaqs: FaqItem[];
 }
 
-const sharedHubFaqs = (serviceAr: string): FaqItem[] => [
+// Emergency trades: a call-out genuinely can happen at 2am.
+const EMERGENCY_AVAILABILITY = {
+  badgeAr: "خدمة طوارئ 24/7",
+  noteAr:
+    "فريق الطوارئ متاح على مدار الساعة طوال أيام الأسبوع بما في ذلك العطلات الرسمية.",
+  faqAnswerAr:
+    "نعم، فريق الطوارئ لدينا متاح 24/7 طوال أيام الأسبوع بما في ذلك العطلات الرسمية. تواصل معنا واتساب أو هاتفياً وسنصلك في أسرع وقت.",
+};
+
+// Scheduled finishing trades. Tiling and parquet are measured, quoted and executed
+// over days — advertising 3am call-outs for them is a claim we cannot honour, and it
+// reads as boilerplate on exactly the pages that need to look like a real craftsman.
+const SCHEDULED_AVAILABILITY = {
+  badgeAr: "معاينة خلال 24 ساعة",
+  noteAr:
+    "نحدد موعد المعاينة خلال 24 ساعة من طلبك، ونبدأ التنفيذ في الموعد المتفق عليه كتابةً.",
+  faqAnswerAr:
+    "استقبال الطلبات وتحديد المواعيد متاح يومياً، والمعاينة عادةً خلال 24 ساعة من طلبك. أما التنفيذ نفسه فيتم في ساعات عمل متفق عليها مسبقاً — تركيب السيراميك والباركيه عمل مجدول يستغرق أياماً وليس خدمة طوارئ، ونفضّل أن نكون صريحين في ذلك.",
+};
+
+const sharedHubFaqs = (
+  serviceAr: string,
+  availability: Service["availability"],
+): FaqItem[] => [
   {
     question: `هل تقدمون ${serviceAr} في جميع مدن المملكة؟`,
-    answer: `نعم، نغطي 10 مدن رئيسية في السعودية: الرياض، جدة، الدمام، مكة المكرمة، المدينة المنورة، الطائف، أبها، تبوك، بريدة، وخميس مشيط. اختر مدينتك للاطلاع على تفاصيل الخدمة محلياً.`,
+    answer: `نعم، نغطي 10 مدن رئيسية في السعودية: الرياض، جدة، الدمام، مكة المكرمة، المدينة المنورة، الطائف، أبها، تبوك، بريدة، وخميس مشيط. مقرنا في المدينة المنورة، ونخدم بقية المدن بفرق تنتقل إليها. اختر مدينتك للاطلاع على تفاصيل الخدمة محلياً.`,
   },
   {
     question: "هل خدماتكم متاحة على مدار الساعة؟",
-    answer:
-      "نعم، فريق الطوارئ لدينا متاح 24/7 طوال أيام الأسبوع بما في ذلك العطلات الرسمية. تواصل معنا واتساب أو هاتفياً وسنصلك في أسرع وقت.",
+    answer: availability.faqAnswerAr,
   },
   {
     question: "ما هو الضمان المقدم على الأعمال؟",
@@ -75,6 +122,7 @@ export const services: Service[] = [
     citySlugPrefix: "سباك",
     titleAr: "خدمات السباكة",
     hubTitleAr: "شركة سباكة محترفة",
+    availability: EMERGENCY_AVAILABILITY,
     shortDescriptionAr:
       "خدمات سباكة احترافية تشمل كشف تسريبات المياه، تسليك المجاري، وصيانة شبكات الصرف الصحي.",
     longDescriptionAr:
@@ -223,7 +271,7 @@ export const services: Service[] = [
         ],
       },
     ],
-    hubFaqs: sharedHubFaqs("خدمات السباكة"),
+    hubFaqs: sharedHubFaqs("خدمات السباكة", EMERGENCY_AVAILABILITY),
   },
 
   // 2. CLEANING
@@ -234,6 +282,7 @@ export const services: Service[] = [
     titleAr: "خدمات التنظيف",
     hubTitleAr: "شركة تنظيف منازل وفلل",
     cityHeadingAr: "شركة تنظيف منازل وفلل",
+    availability: EMERGENCY_AVAILABILITY,
     shortDescriptionAr:
       "خدمات تنظيف شاملة للمنازل والفلل والشقق بأحدث المعدات ومواد التنظيف الآمنة.",
     longDescriptionAr:
@@ -376,7 +425,7 @@ export const services: Service[] = [
         ],
       },
     ],
-    hubFaqs: sharedHubFaqs("خدمات التنظيف"),
+    hubFaqs: sharedHubFaqs("خدمات التنظيف", EMERGENCY_AVAILABILITY),
   },
 
   // 3. MAINTENANCE
@@ -386,6 +435,7 @@ export const services: Service[] = [
     citySlugPrefix: "صيانة",
     titleAr: "خدمات الصيانة العامة",
     hubTitleAr: "شركة صيانة منازل شاملة",
+    availability: EMERGENCY_AVAILABILITY,
     shortDescriptionAr:
       "صيانة منازل شاملة تشمل الكهرباء والتكييف والأعمال العامة بفنيين معتمدين.",
     longDescriptionAr:
@@ -518,7 +568,7 @@ export const services: Service[] = [
         ],
       },
     ],
-    hubFaqs: sharedHubFaqs("خدمات الصيانة"),
+    hubFaqs: sharedHubFaqs("خدمات الصيانة", EMERGENCY_AVAILABILITY),
   },
 
   // 4. LANDSCAPING
@@ -528,6 +578,7 @@ export const services: Service[] = [
     citySlugPrefix: "تنسيق-حدائق",
     titleAr: "تنسيق الحدائق",
     hubTitleAr: "شركة تنسيق حدائق وتصميم لاندسكيب",
+    availability: EMERGENCY_AVAILABILITY,
     shortDescriptionAr:
       "تصميم وتنسيق الحدائق المنزلية، تركيب العشب الصناعي، الشلالات والنوافير.",
     longDescriptionAr:
@@ -660,7 +711,7 @@ export const services: Service[] = [
         ],
       },
     ],
-    hubFaqs: sharedHubFaqs("خدمات تنسيق الحدائق"),
+    hubFaqs: sharedHubFaqs("خدمات تنسيق الحدائق", EMERGENCY_AVAILABILITY),
   },
 
   // 5. CONTRACTING
@@ -670,6 +721,7 @@ export const services: Service[] = [
     citySlugPrefix: "مقاولات",
     titleAr: "المقاولات العامة",
     hubTitleAr: "شركة مقاولات وبناء فلل",
+    availability: EMERGENCY_AVAILABILITY,
     shortDescriptionAr:
       "مقاولات عامة، بناء الفلل، ترميم المباني، وتشطيب على المفتاح.",
     longDescriptionAr:
@@ -802,7 +854,7 @@ export const services: Service[] = [
         ],
       },
     ],
-    hubFaqs: sharedHubFaqs("خدمات المقاولات"),
+    hubFaqs: sharedHubFaqs("خدمات المقاولات", EMERGENCY_AVAILABILITY),
   },
 
   // 6. FURNITURE MOVING (folder is "fernature" — keep folder, but Arabic slug is "نقل-عفش")
@@ -812,6 +864,7 @@ export const services: Service[] = [
     citySlugPrefix: "نقل-عفش",
     titleAr: "نقل العفش",
     hubTitleAr: "شركة نقل عفش وأثاث",
+    availability: EMERGENCY_AVAILABILITY,
     shortDescriptionAr:
       "نقل عفش وأثاث المنازل بسيارات مجهزة وفنيين مدربين على الفك والتركيب.",
     longDescriptionAr:
@@ -944,7 +997,7 @@ export const services: Service[] = [
         ],
       },
     ],
-    hubFaqs: sharedHubFaqs("خدمات نقل العفش"),
+    hubFaqs: sharedHubFaqs("خدمات نقل العفش", EMERGENCY_AVAILABILITY),
   },
 
   // 7. INSULATION
@@ -954,6 +1007,7 @@ export const services: Service[] = [
     citySlugPrefix: "عزل",
     titleAr: "خدمات العزل",
     hubTitleAr: "شركة عزل أسطح وخزانات",
+    availability: EMERGENCY_AVAILABILITY,
     shortDescriptionAr:
       "عزل الأسطح، الخزانات، الفوم، والعزل الحراري والمائي بضمان طويل.",
     longDescriptionAr:
@@ -1086,7 +1140,7 @@ export const services: Service[] = [
         ],
       },
     ],
-    hubFaqs: sharedHubFaqs("خدمات العزل"),
+    hubFaqs: sharedHubFaqs("خدمات العزل", EMERGENCY_AVAILABILITY),
   },
 
   // 8. PARQUET — solo "معلم" branding (KSA users search for individual craftsmen,
@@ -1098,12 +1152,48 @@ export const services: Service[] = [
     hubSlug: "معلم-تركيب-باركية",
     citySlugPrefix: "معلم-تركيب-باركية",
     titleAr: "خدمات تركيب باركية",
-    hubTitleAr: "معلم تركيب باركية",
-    cityHeadingAr: "معلم تركيب باركية",
+    // "باركيه" (with ه) is how Saudi searchers actually type it — it is the spelling
+    // in the GSC queries these pages surface for. The slugs keep "باركية" because
+    // they are already indexed and a 301 now would reset a signal that has only just
+    // started forming; between URL and heading the page covers both spellings.
+    hubTitleAr: "معلم تركيب باركيه",
+    cityHeadingAr: "معلم تركيب باركيه",
+    availability: SCHEDULED_AVAILABILITY,
     shortDescriptionAr:
-      "معلم تركيب باركية محترف لجميع أنواع الباركية: الخشب الطبيعي، الباركية المهندس، والفينيل SPC وLVT بأيدي حرفيين متمرسين.",
+      "معلم تركيب باركيه محترف لجميع أنواع الباركيه: الخشب الطبيعي، الباركيه المهندس، والفينيل SPC وLVT بأيدي حرفيين متمرسين.",
     longDescriptionAr:
-      "نوفر معلم تركيب باركية متخصص لتركيب جميع أنواع الأرضيات الخشبية في الفلل والشقق والمكاتب. خبرة طويلة في تركيب باركية خشب الأرو، الزان، الموسكي، والماهوجني، إضافة إلى الباركية المهندس والفينيل المقاوم للماء. نعمل بطريقة اللصق أو المسامير حسب نوع الأرضية، مع تركيب اللباد العازل والنعلة بشكل احترافي.",
+      "نوفر معلم تركيب باركيه متخصص لتركيب جميع أنواع الأرضيات الخشبية في الفلل والشقق والمكاتب. خبرة طويلة في تركيب باركيه خشب الأرو، الزان، الموسكي، والماهوجني، إضافة إلى الباركيه المهندس والفينيل المقاوم للماء. نعمل بطريقة اللصق أو المسامير حسب نوع الأرضية، مع تركيب اللباد العازل والنعلة بشكل احترافي. تكتب أيضاً «باركية»، وهي نفس الخدمة ونفس الفريق.",
+    process: {
+      steps: [
+        {
+          titleAr: "معاينة الأرضية وقياس الاستواء",
+          bodyAr:
+            "نزور الموقع خلال 24 ساعة، نقيس المساحة، ونفحص استواء الأرضية بمسطرة طويلة. أي فرق يتجاوز 3 ملم على المترين يحتاج صبة تسوية قبل الباركيه، ونخبرك بذلك في المعاينة لا بعد بدء العمل.",
+        },
+        {
+          titleAr: "عرض سعر مكتوب ثابت",
+          bodyAr:
+            "تستلم عرضاً مكتوباً يفصّل نوع الباركيه، سماكته، سعر المتر، تكلفة اللباد والنعلة والعتبات، وأي صبة تسوية لازمة. السعر لا يتغير بعد التوقيع ما لم تطلب أنت تغييراً.",
+        },
+        {
+          titleAr: "تهيئة الأرضية وفرش اللباد",
+          bodyAr:
+            "ننظّف الأرضية، ننفّذ التسوية إن لزمت، ونفرش اللباد العازل المناسب للحالة — عازل رطوبة فوق الخرسانة، ونوع خاص فوق التدفئة الأرضية.",
+        },
+        {
+          titleAr: "التركيب مع فاصل التمدد",
+          bodyAr:
+            "نركّب بنظام النقر أو اللصق حسب النوع، ونترك فاصل تمدد 10–15 ملم حول الجدران والأعمدة. إهمال هذا الفاصل هو السبب الأول لتقوّس الباركيه وطقطقته لاحقاً.",
+        },
+        {
+          titleAr: "النعلة والتسليم والتنظيف",
+          bodyAr:
+            "نركّب النعلة بقص زاوية 45 درجة لتغطية فاصل التمدد، ننظّف الموقع، ونمشي معك على الأرضية لوحاً بلوح قبل الاستلام.",
+        },
+      ],
+      warrantyAr:
+        "سنتان على عيوب التركيب — الطقطقة، انفصال الألواح، وانفتاح الفواصل الناتج عن خطأ في التنفيذ أو في فاصل التمدد. لا يشمل الضمان تلف الغمر بالماء للأنواع غير المقاومة، ولا الخدوش الناتجة عن الاستخدام.",
+    },
     iconName: "Layers",
     colorTheme: "stone",
     galleryImages: IMG.parquet.gallery,
@@ -1111,6 +1201,7 @@ export const services: Service[] = [
       {
         slug: "تركيب-باركية-خشب-طبيعي",
         titleAr: "تركيب باركية خشب طبيعي",
+        titleShortAr: "تركيب باركيه خشب طبيعي",
         shortAr: "تركيب باركية خشب طبيعي بأنواع الأرو، الزان، الموسكي، والماهوجني",
         longAr:
           "خدمة تركيب الباركية الطبيعي من أجود أنواع الأخشاب الصلبة المستوردة. معلم تركيب باركية خشب يضمن لك أرضية فاخرة قابلة للصنفرة والتجديد عدة مرات، وعمر افتراضي يصل لأكثر من 50 سنة مع الصيانة الصحيحة.",
@@ -1160,6 +1251,7 @@ export const services: Service[] = [
       {
         slug: "تركيب-باركية-مهندس",
         titleAr: "تركيب باركية مهندس HDF",
+        titleShortAr: "تركيب باركيه مهندس HDF",
         shortAr: "تركيب الباركية المهندس متعدد الطبقات بأنظمة Click الحديثة",
         longAr:
           "الباركية المهندس هو الخيار الأذكى للمنازل السعودية: طبقة خشب طبيعي فوق قاعدة HDF مضغوطة، يجمع بين فخامة الخشب الطبيعي وقوة مقاومة الرطوبة والتغير الحراري. معلم تركيب باركية مهندس بنظام النقر (Click) السريع بدون لاصق.",
@@ -1209,6 +1301,7 @@ export const services: Service[] = [
       {
         slug: "تركيب-باركية-فينيل-SPC",
         titleAr: "تركيب باركية فينيل SPC وLVT",
+        titleShortAr: "تركيب باركيه فينيل SPC",
         shortAr: "تركيب الباركية الفينيل المقاوم للماء 100% للحمامات والمطابخ",
         longAr:
           "الباركية الفينيل بنوعيه SPC (Stone Plastic Composite) و LVT (Luxury Vinyl Tile) هو الحل الأمثل للحمامات والمطابخ والمناطق الرطبة. معلم تركيب باركية فينيل بنظام النقر السريع، مظهر خشبي واقعي 100%، مقاوم للماء والخدش، ومناسب للحركة الكثيفة في المنشآت التجارية.",
@@ -1256,7 +1349,7 @@ export const services: Service[] = [
         ],
       },
     ],
-    hubFaqs: sharedHubFaqs("خدمات تركيب الباركية"),
+    hubFaqs: sharedHubFaqs("خدمات تركيب الباركية", SCHEDULED_AVAILABILITY),
   },
 
   // 9. CERAMIC / TILE — solo "معلم" branding for the same reason as parquet.
@@ -1269,10 +1362,42 @@ export const services: Service[] = [
     titleAr: "خدمات تركيب السيراميك والبلاط",
     hubTitleAr: "معلم تركيب سيراميك",
     cityHeadingAr: "معلم تركيب سيراميك",
+    availability: SCHEDULED_AVAILABILITY,
     shortDescriptionAr:
       "معلم تركيب سيراميك وبلاط محترف للأرضيات والجدران والحمامات والمطابخ، بأحدث تقنيات القص بالليزر والتركيب بدون فواصل.",
     longDescriptionAr:
       "نقدم خدمة معلم تركيب سيراميك وبلاط متخصص لجميع أنواع الأرضيات: السيراميك، البورسلين، الرخام، الجرانيت، والموزايك. خبرة طويلة في تركيب السيراميك على الحوائط والأرضيات بطريقة الإسمنت أو اللاصق المخصص، مع تقنية القص بالليزر للحصول على فواصل دقيقة 1 ملم أو تركيب بدون فواصل (Rectified Edges) للمظهر العصري.",
+    process: {
+      steps: [
+        {
+          titleAr: "معاينة الموقع وحصر المساحات",
+          bodyAr:
+            "نزور الموقع خلال 24 ساعة، نحصر مساحات الأرضيات والحوائط ودورات المياه كلاً على حدة، ونحدد ما إذا كان البلاط القديم يحتاج كسراً أم يقبل التركيب فوقه.",
+        },
+        {
+          titleAr: "عرض سعر مكتوب ثابت",
+          bodyAr:
+            "تستلم عرضاً مكتوباً يفصّل سعر المتر لكل مقاس على حدة، نوع اللاصق، نوع حشو الفواصل (إسمنتي أم إيبوكسي)، وتكلفة الكسر والترحيل إن لزمت. نوضح دائماً ما إذا كان السعر شغل يد فقط أم شاملاً المواد.",
+        },
+        {
+          titleAr: "تجهيز الأرضية والعزل",
+          bodyAr:
+            "نسوّي الأرضية بمواد ذاتية التسوية عند الحاجة، وننفّذ العزل المائي تحت بلاط دورات المياه والمطابخ قبل أي بلاطة. تخطّي هذه الخطوة هو سبب أغلب التسريبات التي تظهر بعد سنة.",
+        },
+        {
+          titleAr: "التركيب بالميزان والكلبسات",
+          bodyAr:
+            "نحدد منسوباً مرجعياً بالليزر، نفرد اللاصق باتجاه واحد لإخراج الهواء، ونستخدم نظام الكلبسات للتسوية حتى لا تبرز حافة بلاطة عن جارتها. نضبط ميل دورات المياه بنسبة 1–1.5% نحو الصفاية ونجرّبه بالماء.",
+        },
+        {
+          titleAr: "الترويبة والتنظيف والتسليم",
+          bodyAr:
+            "نحشو الفواصل بعد جفاف اللاصق 24–48 ساعة، وننظّف بقايا الإسمنت قبل أن تتصلد. نستلم معك بالإضاءة الجانبية، فهي التي تُظهر أي تسنن في السطح.",
+        },
+      ],
+      warrantyAr:
+        "سنتان على عيوب التركيب — تطبّل البلاط، تفكك الترويبة، والتسنن الناتج عن خطأ في التنفيذ، إضافة إلى خمس سنوات على العزل المائي الذي ننفّذه تحت البلاط. لا يشمل الضمان كسر البلاط بفعل الصدمات ولا عيوب تصنيع البلاط نفسه.",
+    },
     iconName: "Grid3x3",
     colorTheme: "teal",
     galleryImages: IMG.ceramic.gallery,
@@ -1280,6 +1405,7 @@ export const services: Service[] = [
       {
         slug: "تركيب-بلاط-سيراميك",
         titleAr: "تركيب بلاط وسيراميك للأرضيات والحوائط",
+        titleShortAr: "تركيب بلاط وسيراميك",
         shortAr: "معلم تركيب بلاط للأرضيات والجدران والحمامات والمطابخ",
         longAr:
           "خدمة تركيب البلاط والسيراميك الكلاسيكي للأرضيات والحوائط في الفلل والشقق. معلم تركيب سيراميك يتعامل مع جميع المقاسات من البلاط الصغير 30×30 سم إلى البلاط الكبير 60×120 سم، باستخدام الإسمنت اللاصق المعتمد أو اللاصق الإيبوكسي للأماكن الرطبة.",
@@ -1329,6 +1455,7 @@ export const services: Service[] = [
       {
         slug: "تركيب-بورسلين",
         titleAr: "تركيب بورسلين كبير الحجم وميكروسيمنت",
+        titleShortAr: "تركيب بورسلين كبير المقاس",
         shortAr: "تركيب بورسلين كبير المقاس بفواصل 1 ملم للديكور العصري",
         longAr:
           "تركيب البورسلين هو الخيار الأرقى للفلل الحديثة بمقاسات كبيرة 60×120، 80×160، وحتى 120×260 سم. البورسلين أكثر صلابة من السيراميك العادي ومقاوم للماء كلياً (امتصاص أقل من 0.5%). معلم تركيب بورسلين بأدوات رفع Suction Cups متخصصة وفريق متكامل لضمان عدم كسر الألواح الكبيرة.",
@@ -1378,6 +1505,7 @@ export const services: Service[] = [
       {
         slug: "تركيب-رخام-وجرانيت",
         titleAr: "تركيب رخام وجرانيت وموزايك",
+        titleShortAr: "تركيب رخام وجرانيت",
         shortAr: "تركيب الرخام الطبيعي والجرانيت بأيدي معلم رخامات محترف",
         longAr:
           "تركيب الرخام والجرانيت هو فن التشطيب الفاخر للقصور والفلل الراقية. معلم تركيب رخام متخصص في رخام كرارا الإيطالي، الرخام التركي، والجرانيت الهندي والبرازيلي. نقوم بتركيب الرخام للأرضيات، السلالم، الواجهات، أسطح المطابخ، والحمامات بأحدث تقنيات القص بالليزر والتلميع.",
@@ -1425,7 +1553,7 @@ export const services: Service[] = [
         ],
       },
     ],
-    hubFaqs: sharedHubFaqs("خدمات تركيب السيراميك والبلاط"),
+    hubFaqs: sharedHubFaqs("خدمات تركيب السيراميك والبلاط", SCHEDULED_AVAILABILITY),
   },
 ];
 

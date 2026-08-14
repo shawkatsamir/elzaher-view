@@ -30,11 +30,12 @@ export default function SubServiceHubTemplate({
 }: SubServiceHubTemplateProps) {
   const t = themes[service.colorTheme];
   const pageUrl = `/${subService.slug}`;
+  const head = subService.titleShortAr ?? subService.titleAr;
 
   return (
     <main className="flex-1">
       <ServiceJsonLd
-        name={subService.titleAr}
+        name={head}
         description={subService.shortAr}
         image={subService.heroImage}
         url={pageUrl}
@@ -65,7 +66,7 @@ export default function SubServiceHubTemplate({
                 {service.titleAr}
               </Badge>
               <h1 className="mb-6 text-4xl font-bold text-gray-900 lg:text-5xl">
-                {subService.titleAr}
+                {head}
               </h1>
               <p className="mb-8 text-lg leading-relaxed text-gray-600">
                 {subService.longAr}
@@ -81,7 +82,7 @@ export default function SubServiceHubTemplate({
               <div className="overflow-hidden rounded-2xl shadow-2xl">
                 <Img
                   src={subService.heroImage}
-                  alt={subService.titleAr}
+                  alt={head}
                   className="h-[400px] w-full object-cover"
                   fetchPriority="high"
                   loading="eager"
@@ -97,7 +98,7 @@ export default function SubServiceHubTemplate({
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl">
             <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">
-              كيف ننفذ {subService.titleAr}
+              كيف ننفذ {head}
             </h2>
             <ul className="space-y-4">
               {subService.techniques.map((tech, i) => (
@@ -120,7 +121,7 @@ export default function SubServiceHubTemplate({
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold text-gray-900">
-              {subService.titleAr} في جميع مدن المملكة
+              {head} في جميع مدن المملكة
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-gray-600">
               اختر مدينتك لخدمة محلية متخصصة
@@ -147,20 +148,20 @@ export default function SubServiceHubTemplate({
       </section>
 
       <FaqSection
-        title={`الأسئلة الشائعة حول ${subService.titleAr}`}
+        title={`الأسئلة الشائعة حول ${head}`}
         items={subService.faqs}
       />
 
       {relatedPosts && relatedPosts.length > 0 && (
         <RelatedPostsSection
           posts={relatedPosts}
-          title={`مقالات في ${subService.titleAr}`}
+          title={`مقالات في ${head}`}
           subtitle="إرشادات الخبراء"
         />
       )}
 
       <CtaSection
-        title={`اطلب ${subService.titleAr} الآن`}
+        title={`اطلب ${head} الآن`}
         subtitle="فريقنا جاهز للوصول إليك في أي مدينة"
         theme={service.colorTheme}
       />

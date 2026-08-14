@@ -12,6 +12,10 @@ import BreadcrumbJsonLd from "@/app/_components/BreadcrumbJsonLd";
 import FaqSection from "./FaqSection";
 import CtaSection from "./CtaSection";
 import RelatedPostsSection, { type RelatedPost } from "./RelatedPostsSection";
+import RelatedProjectsSection, {
+  type RelatedProject,
+} from "./RelatedProjectsSection";
+import ProcessSection from "./ProcessSection";
 import { themes } from "./theme";
 import { getNearbyCities, type City } from "@/app/lib/locations";
 import type { Service, FaqItem } from "@/app/lib/services";
@@ -27,6 +31,7 @@ interface ServiceCityTemplateProps {
   service: Service;
   city: City;
   relatedPosts?: RelatedPost[];
+  relatedProjects?: RelatedProject[];
 }
 
 function buildCityFaqs(service: Service, city: City): FaqItem[] {
@@ -56,6 +61,7 @@ export default function ServiceCityTemplate({
   service,
   city,
   relatedPosts,
+  relatedProjects,
 }: ServiceCityTemplateProps) {
   const t = themes[service.colorTheme];
   const slug = buildServiceCitySlug(service, city);
@@ -72,7 +78,7 @@ export default function ServiceCityTemplate({
     <main className="flex-1">
       <ServiceJsonLd
         name={`${service.titleAr} في ${city.nameAr}`}
-        description={`${service.shortDescriptionAr} في ${city.nameAr} وضواحيها. فريق محلي متاح 24/7.`}
+        description={`${service.shortDescriptionAr} في ${city.nameAr} وضواحيها. ${service.availability.noteAr}`}
         image={service.galleryImages[0]?.src ?? business.defaultLogoPath}
         url={pageUrl}
         areaServedAr={city.nameAr}
@@ -173,6 +179,15 @@ export default function ServiceCityTemplate({
         </section>
       )}
 
+      {service.process && (
+        <ProcessSection
+          steps={service.process.steps}
+          warrantyAr={service.process.warrantyAr}
+          title={`كيف ننفذ ${service.cityHeadingAr ?? service.titleAr} في ${city.nameAr}: خطوة بخطوة`}
+          theme={service.colorTheme}
+        />
+      )}
+
       {/* Neighborhoods coverage */}
       <section className={`relative overflow-hidden ${t.darkBg} py-16 text-white`}>
         <div className="container relative z-10 mx-auto px-4">
@@ -199,7 +214,7 @@ export default function ServiceCityTemplate({
                 اتصل بنا في {city.nameAr}
               </h3>
               <p className={`mb-6 text-center ${t.outlineText}`}>
-                خدمة طوارئ على مدار الساعة
+                {service.availability.badgeAr}
               </p>
               <Button
                 className="w-full bg-white py-6 font-bold text-gray-900 hover:bg-gray-100"
@@ -228,7 +243,7 @@ export default function ServiceCityTemplate({
                 className="block"
               >
                 <SubServiceCard
-                  title={`${sub.titleAr} في ${city.nameAr}`}
+                  title={`${sub.titleShortAr ?? sub.titleAr} في ${city.nameAr}`}
                   subtitle={sub.shortAr}
                   features={sub.techniques.slice(0, 4)}
                   image={sub.heroImage}
@@ -238,6 +253,14 @@ export default function ServiceCityTemplate({
           </div>
         </div>
       </section>
+
+      {relatedProjects && relatedProjects.length > 0 && (
+        <RelatedProjectsSection
+          projects={relatedProjects}
+          title={`من أعمالنا في ${city.nameAr}`}
+          subtitle="مشاريع منفذة بصور وتفاصيل التنفيذ والمواد المستخدمة"
+        />
+      )}
 
       <FaqSection
         title={`الأسئلة الشائعة عن ${service.titleAr} في ${city.nameAr}`}
@@ -314,7 +337,7 @@ export default function ServiceCityTemplate({
 
       <CtaSection
         title={`هل تحتاج ${service.titleAr} في ${city.nameAr} الآن؟`}
-        subtitle="فريق الطوارئ جاهز لخدمتكم على مدار الساعة"
+        subtitle={service.availability.noteAr}
         theme={service.colorTheme}
       />
     </main>

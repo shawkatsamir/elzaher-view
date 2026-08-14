@@ -117,6 +117,7 @@ export const cities: City[] = [
     nameEn: "Medina",
     keywords: ["المدينة", "طيبة", "أحياء المدينة"],
     neighborhoods: [
+      "العصيفرين",
       "قباء",
       "العوالي",
       "الحرة الشرقية",

@@ -191,7 +191,7 @@ export function getContextualServiceLinks(
         heading: service.hubTitleAr,
         primary: { title: service.hubTitleAr, url: `/${service.hubSlug}` },
         deep: service.subServices.map((sub) => ({
-          title: sub.titleAr,
+          title: sub.titleShortAr ?? sub.titleAr,
           url: `/${sub.slug}`,
         })),
       });
@@ -200,7 +200,7 @@ export function getContextualServiceLinks(
 
     const deep = targetCities.flatMap((city) =>
       service.subServices.map((sub) => ({
-        title: `${sub.titleAr} في ${city.nameAr}`,
+        title: `${sub.titleShortAr ?? sub.titleAr} في ${city.nameAr}`,
         url: `/${buildSubServiceCitySlug(sub, city)}`,
       })),
     );
